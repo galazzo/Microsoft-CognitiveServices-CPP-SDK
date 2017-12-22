@@ -27,10 +27,10 @@ namespace Microsoft {
             Analysis analyze(HttpContent* data, std::string subscriptionKey, std::string ContentType);
 			
 			namespace Person {
-				void CreateGroup(HttpContent* data, std::string subscriptionKey, std::string ContentType);
-				void TrainGroup(HttpContent* data, std::string subscriptionKey, std::string ContentType);
-				void CreatePerson(HttpContent* data, std::string subscriptionKey, std::string ContentType);
-				void AddPersonFace(HttpContent* data, std::string subscriptionKey, std::string ContentType);
+				void CreateGroup(HttpContent* data, std::string personGroupId, std::string subscriptionKey, std::string ContentType);
+				void TrainGroup(std::string personGroupId, std::string subscriptionKey, std::string ContentType);
+				void CreatePerson(HttpContent* data, std::string personGroupId, std::string subscriptionKey, std::string ContentType);
+				void AddPersonFace(HttpContent* data, std::string personGroupId, std::string personId,std::string subscriptionKey, std::string ContentType);
 			}
 			
         }

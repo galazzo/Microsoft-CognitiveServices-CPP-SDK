@@ -4,7 +4,10 @@
 using namespace std;
 
 
-void Microsoft::CognitiveServices::ComputerVision::Person::CreateGroup(HttpContent* data, std::string personGroupdId, std::string subscriptionKey, std::string ContentType)
+void Microsoft::CognitiveServices::ComputerVision::Person::CreateGroup(HttpContent* data, 
+																		std::string personGroupId, 
+																		std::string subscriptionKey,
+																		std::string ContentType)
 {	
 	std::string endpoint = "https://westeurope.api.cognitive.microsoft.com/face/v1.0/persongroups/"+personGroupId;
 	std::map<string, string> headers;
@@ -15,10 +18,9 @@ void Microsoft::CognitiveServices::ComputerVision::Person::CreateGroup(HttpConte
 	string json = post(endpoint,"", &headers, data);
 	//std::cout << "Raw Json Input\n" << json << "\n\n";
 
-	return analysis;
 };
 
-void Microsoft::CognitiveServices::ComputerVision::Person::TrainGroup(std::string personGroupdId,
+void Microsoft::CognitiveServices::ComputerVision::Person::TrainGroup(std::string personGroupId,
 																	std::string subscriptionKey,
 																	std::string ContentType)
 {
@@ -31,13 +33,12 @@ void Microsoft::CognitiveServices::ComputerVision::Person::TrainGroup(std::strin
 
 	HttpContent* data = new HttpContent;
 	data->buffer = new char[1]; 
-	data->buffer[0] = 0;
+	//data->buffer[0] = '\0';
 	data->size = 0;
 	
 	string json = post(endpoint,"", &headers, data);
 	//std::cout << "Raw Json Input\n" << json << "\n\n";
 
-	return analysis;
 };
 
 /*
@@ -47,11 +48,11 @@ void Microsoft::CognitiveServices::ComputerVision::Person::TrainGroup(std::strin
 }
 */
 void Microsoft::CognitiveServices::ComputerVision::Person::CreatePerson(HttpContent* data, 
-																		std::string personGroupdId,
+																		std::string personGroupId,
 																		std::string subscriptionKey, 
 																		std::string ContentType)
 {	
-	std::string endpoint "https://westeurope.api.cognitive.microsoft.com/face/v1.0/persongroups/"+personGroupId+"/persons";
+	std::string endpoint="https://westeurope.api.cognitive.microsoft.com/face/v1.0/persongroups/"+personGroupId+"/persons";
 	std::map<string, string> headers;
 
 	headers.insert(std::pair<std::string, std::string>("Ocp-Apim-Subscription-Key", subscriptionKey));
@@ -60,7 +61,6 @@ void Microsoft::CognitiveServices::ComputerVision::Person::CreatePerson(HttpCont
 	string json = post(endpoint,"", &headers, data);
 	//std::cout << "Raw Json Input\n" << json << "\n\n";
 
-	return analysis;
 };
 
 
@@ -79,5 +79,4 @@ void Microsoft::CognitiveServices::ComputerVision::Person::AddPersonFace(HttpCon
 	string json = post(endpoint,"", &headers, data);
 	//std::cout << "Raw Json Input\n" << json << "\n\n";
 
-	return analysis;
 };
