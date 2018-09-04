@@ -312,7 +312,8 @@ Microsoft::CognitiveServices::ComputerVision::Analysis Microsoft::CognitiveServi
 	Microsoft::CognitiveServices::ComputerVision::Analysis analysis;
 	CJsonSerializer::Deserialize( &analysis, json );
 
-	//std::cout << "Raw Json Input\n" << json << "\n\n";
+        //std::cout << "Raw Json Input\n" << json << "\n\n";
+        //std::cout.flush();
 
 	return analysis;
 };
