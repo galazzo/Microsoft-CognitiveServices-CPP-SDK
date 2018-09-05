@@ -21,28 +21,28 @@ public:
 
     const std::string requestId();
     const Metadata metadata();
-	const Adult adult();
-	const Color color();
-	const ImageType imageType();
+    const Adult adult();
+    const Color color();
+    const ImageType imageType();
 	
     Microsoft::CognitiveServices::ComputerVision::Description description();
     std::vector<Microsoft::CognitiveServices::ComputerVision::Category> categories();
-	std::vector<Microsoft::CognitiveServices::ComputerVision::Tag> tags();
-	std::vector<Microsoft::CognitiveServices::ComputerVision::Face> faces();
+    std::vector<Microsoft::CognitiveServices::ComputerVision::Tag> tags();
+    std::vector<Microsoft::CognitiveServices::ComputerVision::Face> faces();
 
     void debug();
 
 private:
     std::string _requestId;
     Metadata _metadata;
-	Adult _adult;
-	Color _color;
-	ImageType _imageType;
+    Adult _adult;
+    Color _color;
+    ImageType _imageType;
 	
     Microsoft::CognitiveServices::ComputerVision::Description _description;
     std::vector<Microsoft::CognitiveServices::ComputerVision::Category> _categories;
-	std::vector<Microsoft::CognitiveServices::ComputerVision::Tag> _tags;
-	std::vector<Microsoft::CognitiveServices::ComputerVision::Face> _faces;
+    std::vector<Microsoft::CognitiveServices::ComputerVision::Tag> _tags;
+    std::vector<Microsoft::CognitiveServices::ComputerVision::Face> _faces;
 };
 
 Microsoft::CognitiveServices::ComputerVision::Analysis Microsoft::CognitiveServices::ComputerVision::describe(HttpContent* data, std::string subscriptionKey, std::string ContentType="application/octet-stream");

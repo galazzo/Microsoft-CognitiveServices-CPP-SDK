@@ -14,6 +14,7 @@ int main(int argc, char **argv)
     std::string subscriptionKey;
     subscriptionKeyFile.open("subscriptionKey");
     std::getline(subscriptionKeyFile, subscriptionKey);
+    subscriptionKeyFile.close();
 
     HttpContent wt;
 
