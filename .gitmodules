@@ -1,0 +1,3 @@
+[submodule "gphoto2-cpp"]
+	path = gphoto2-cpp
+	url = https://github.com/galazzo/gphoto2-cpp.git

@@ -6,7 +6,7 @@
 //#include <gphoto2/gphoto2-camera.h>
 #include "microsoft/cognitive/cv/description.h"
 #include "microsoft/cognitive/cv/analysis.h"
-#include "gphoto2/gphoto2.h"
+#include "gphoto2-cpp/gphoto2.h"
 
 #include <json/json.h>
 
