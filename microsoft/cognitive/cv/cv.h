@@ -9,7 +9,7 @@ namespace Microsoft {
     namespace CognitiveServices {
         namespace ComputerVision {
             class Analysis;
-            class Description;
+            class Description;			
             struct Caption;
             struct Metadata;
             struct Category;
@@ -22,9 +22,17 @@ namespace Microsoft {
             struct Color;
             struct ImageType;
             struct Adult;
-
+			
             Analysis describe(HttpContent* data, std::string subscriptionKey, std::string ContentType);
             Analysis analyze(HttpContent* data, std::string subscriptionKey, std::string ContentType);
+			
+			namespace Text {
+				struct Word;
+				struct Line;				
+				using BoundingBox = std::array<int, 8>;
+				class RecognitionResult;
+				RecognitionResult RecognizeText(HttpContent* data, std::string subscriptionKey, std::string ContentType);
+			}
 			
 			namespace Person 
 			{
@@ -35,6 +43,7 @@ namespace Microsoft {
 				std::string Identify(HttpContent* data, std::string subscriptionKey, std::string ContentType);
 				std::string Verify(HttpContent* data, std::string subscriptionKey, std::string ContentType);				
 			}
+			
 			
         }
     }
@@ -113,5 +122,13 @@ struct Microsoft::CognitiveServices::ComputerVision::Metadata {
     std::string format;
 };
 
+struct Microsoft::CognitiveServices::ComputerVision::Text::Word {
+	Microsoft::CognitiveServices::ComputerVision::Text::BoundingBox boundingBox;
+	std::string text;
+};
+
+struct Microsoft::CognitiveServices::ComputerVision::Text::Line : Microsoft::CognitiveServices::ComputerVision::Text::Word {
+	std::vector<Microsoft::CognitiveServices::ComputerVision::Text::BoundingBox> words;	
+};
 
 #endif

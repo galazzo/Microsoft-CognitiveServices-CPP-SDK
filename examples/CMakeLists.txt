@@ -16,7 +16,8 @@ file(GLOB SOURCES
 	../gphoto2-cpp/gphoto2.h
 )
 
-add_executable(example example01.cpp ${SOURCES})
+add_executable(analyze analyze.cpp ${SOURCES})
+add_executable(recognize-text recognize-text.cpp ${SOURCES})
 add_executable(camera-ai camera-ai.cpp ${SOURCES} ../gphoto2-cpp/gphoto2.cpp)
 
 include_directories(".")
@@ -24,13 +25,15 @@ include_directories("../")
 
 find_package(CURL REQUIRED) 
 include_directories(${CURL_INCLUDE_DIR})
-target_link_libraries(example ${CURL_LIBRARIES})
+target_link_libraries(analyze ${CURL_LIBRARIES})
+target_link_libraries(recognize-text ${CURL_LIBRARIES})
 target_link_libraries(camera-ai ${CURL_LIBRARIES})
 
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(JSONCPP jsoncpp)
 include_directories(${JSONCPP_INCLUDE_DIRS})
-target_link_libraries(example ${JSONCPP_LIBRARIES})
+target_link_libraries(analyze ${JSONCPP_LIBRARIES})
+target_link_libraries(recognize-text ${JSONCPP_LIBRARIES})
 target_link_libraries(camera-ai ${JSONCPP_LIBRARIES})
 
 include(FindGphoto2.cmake)

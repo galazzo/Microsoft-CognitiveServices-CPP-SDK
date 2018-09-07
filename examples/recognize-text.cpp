@@ -3,12 +3,14 @@
 
 #include <fstream>      // std::ifstream
 
-#include "microsoft/cognitive/cv/description.h"
-#include "microsoft/cognitive/cv/analysis.h"
+#include "microsoft/cognitive/cv/recognize_text.h"
+
+using namespace Microsoft::CognitiveServices::ComputerVision;
 
 int main(int argc, char **argv)
 {
     cout << "Microsoft Cognitive Services in C++" << endl;
+	cout << "Recognize Text" << endl;
 
     std::ifstream subscriptionKeyFile;
     std::string subscriptionKey;
@@ -27,8 +29,8 @@ int main(int argc, char **argv)
     wt.size = buffer.size();
     wt.buffer = reinterpret_cast<char*>(buffer.data());
 
-    Analysis id = analyze(&wt, subscriptionKey, "application/octet-stream");
-    id.debug();
+    Text::RecognitionResult result = Text::RecognizeText(&wt, subscriptionKey, "application/octet-stream");
+    result.debug();
 
     return 0;
 }

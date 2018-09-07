@@ -287,18 +287,17 @@ Microsoft::CognitiveServices::ComputerVision::Analysis Microsoft::CognitiveServi
 	//headers.insert(std::pair<std::string, std::string>("Content-Type", "application/octet-stream"));
 	//headers.insert(std::pair<std::string, std::string>("Content-Type", "multipart/form-data"));
 
-	string json = post(endpoint,"", &headers, data);
+	HttpResponse response = post(endpoint,"", &headers, data);
 	Microsoft::CognitiveServices::ComputerVision::Analysis analysis;
-	CJsonSerializer::Deserialize( &analysis, json );
+	CJsonSerializer::Deserialize( &analysis, response.content );
 
-	//std::cout << "Raw Json Input\n" << json << "\n\n";
+	//std::cout << "Raw Json Input\n" << response.content << "\n\n";
 
 	return analysis;
 };
 
 Microsoft::CognitiveServices::ComputerVision::Analysis Microsoft::CognitiveServices::ComputerVision::analyze(HttpContent* data, std::string subscriptionKey, std::string ContentType)
-{
-	//const char* endpoint ="https://westeurope.api.cognitive.microsoft.com/vision/v1.0/analyze";
+{	
 	const char* endpoint ="https://westeurope.api.cognitive.microsoft.com/vision/v1.0/analyze?visualFeatures=Categories,Tags,Description,Faces,ImageType,Color,Adult&details=Landmarks,Celebrities&language=en";
 
 	std::map<string, string> headers;
@@ -308,12 +307,12 @@ Microsoft::CognitiveServices::ComputerVision::Analysis Microsoft::CognitiveServi
 	//headers.insert(std::pair<std::string, std::string>("Content-Type", "application/octet-stream"));
 	//headers.insert(std::pair<std::string, std::string>("Content-Type", "multipart/form-data"));
 
-	string json = post(endpoint,"", &headers, data);
+	HttpResponse response = post(endpoint,"", &headers, data);
 	Microsoft::CognitiveServices::ComputerVision::Analysis analysis;
-	CJsonSerializer::Deserialize( &analysis, json );
+	CJsonSerializer::Deserialize( &analysis, response.content );
 
-        //std::cout << "Raw Json Input\n" << json << "\n\n";
-        //std::cout.flush();
+	//std::cout << "Raw Json Input\n" << response.content << "\n\n";
+	//std::cout.flush();
 
 	return analysis;
 };

@@ -33,12 +33,39 @@ static size_t WriteCallback(void *content, size_t size, size_t nmemb, void *user
     return size * nmemb;
 }
 
-std::string post(std::string url, std::string fields, std::map<std::string, std::string>* headers, HttpContent* body)
+static size_t OnReceiveData(void * pData, size_t tSize, size_t tCount, void* userp)
+{
+    size_t length = tSize * tCount, index = 0;
+    while (index < length)
+    {
+        unsigned char *temp = (unsigned char *)pData + index;
+        if ((temp[0] == '\r') || (temp[0] == '\n'))
+            break;
+        index++;
+    }
+
+    std::string str((unsigned char*)pData, (unsigned char*)pData + index);		
+    
+	struct HttpResponse *wt = (struct HttpResponse *)userp;	
+	
+	//std::map<std::string, std::string>* pmHeader = (std::map<std::string, std::string>*)pmUser;
+	wt->raw_headers.append(str); wt->raw_headers.append("\n");
+	
+    size_t pos = str.find(": ");
+    if (pos != std::string::npos)
+        wt->headers.insert(std::pair<std::string, std::string> (str.substr(0, pos), str.substr(pos + 2)));
+
+    return (tCount);
+}
+
+
+HttpResponse post(std::string url, std::string fields, std::map<std::string, std::string>* headers, HttpContent* body)
 {
     CURL *curl = NULL;
     CURLcode res;
 
-    std::string result; // = std::string::empty;
+    HttpResponse result;
+	
     struct curl_slist *headersList=NULL; // init to NULL is important
 
     if( headers != NULL)
@@ -60,8 +87,9 @@ std::string post(std::string url, std::string fields, std::map<std::string, std:
     res = curl_global_init(CURL_GLOBAL_DEFAULT);
     // Check for errors
     if(res != CURLE_OK) {
-            fprintf(stderr, "curl_global_init() failed: %s\n", curl_easy_strerror(res));
-            return "-1";
+		fprintf(stderr, "curl_global_init() failed: %s\n", curl_easy_strerror(res));
+		result.status = -1;
+		return result;
     }
 
     // get a curl handle
@@ -84,11 +112,14 @@ std::string post(std::string url, std::string fields, std::map<std::string, std:
             curl_easy_setopt(curl, CURLOPT_READDATA, &(*body));
 
             curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
-            curl_easy_setopt(curl, CURLOPT_WRITEDATA, &result);
+            curl_easy_setopt(curl, CURLOPT_WRITEDATA, &result.content);
 
             // get verbose debug output please
             //curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
-
+			
+			curl_easy_setopt(curl, CURLOPT_HEADERFUNCTION, OnReceiveData);
+			curl_easy_setopt(curl, CURLOPT_HEADERDATA, &result);
+			 
             /*
             If you use POST to a HTTP 1.1 server, you can send data without knowing
             the size before starting the POST if you use chunked encoding. You
@@ -98,15 +129,15 @@ std::string post(std::string url, std::string fields, std::map<std::string, std:
             */
             #ifdef USE_CHUNKED
             {
-                    struct curl_slist *chunk = NULL;
+				struct curl_slist *chunk = NULL;
 
-                    chunk = curl_slist_append(chunk, "Transfer-Encoding: chunked");
-                    res = curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk);
-                    // use curl_slist_free_all() after the *perform() call to free this list again
+				chunk = curl_slist_append(chunk, "Transfer-Encoding: chunked");
+				res = curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk);
+				// use curl_slist_free_all() after the *perform() call to free this list again
             }
             #else
-                    // Set the expected POST size. If you want to POST large amounts of data, consider CURLOPT_POSTFIELDSIZE_LARGE
-                    curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, (long)body->size);
+				// Set the expected POST size. If you want to POST large amounts of data, consider CURLOPT_POSTFIELDSIZE_LARGE
+				curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, (long)body->size);
             #endif
 
             #ifdef DISABLE_EXPECT
@@ -118,11 +149,11 @@ std::string post(std::string url, std::string fields, std::map<std::string, std:
 
             // A less good option would be to enforce HTTP 1.0, but that might also have other implications.
             {
-                    struct curl_slist *chunk = NULL;
+				struct curl_slist *chunk = NULL;
 
-                    chunk = curl_slist_append(chunk, "Expect:");
-                    res = curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk);
-                    // use curl_slist_free_all() after the *perform() call to free this list again
+				chunk = curl_slist_append(chunk, "Expect:");
+				res = curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk);
+				// use curl_slist_free_all() after the *perform() call to free this list again
             }
             #endif
 
@@ -130,17 +161,12 @@ std::string post(std::string url, std::string fields, std::map<std::string, std:
             res = curl_easy_perform(curl);
             if(res != CURLE_OK)
             {
-                /*char* ct;
-                res = curl_easy_getinfo(curl, CURLINFO_CONTENT_TYPE, &ct);
-                if((CURLE_OK == res) && ct != NULL)
-                {
-                    result.append(ct);
-                } else {
-                    fprintf(stderr, "curl_easy_getinfo() failed: %s\n", curl_easy_strerror(res));
-                }
-            } else {*/
-                    fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
-            }
+                result.status = -1;
+                fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
+            } else {
+				result.status = CURLE_OK;
+				cout << result.raw_headers;
+			}
 
             // always cleanup
             curl_easy_cleanup(curl);

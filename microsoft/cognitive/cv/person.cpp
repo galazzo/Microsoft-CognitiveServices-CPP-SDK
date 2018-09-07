@@ -15,8 +15,8 @@ void Microsoft::CognitiveServices::ComputerVision::Person::CreateGroup(HttpConte
 	headers.insert(std::pair<std::string, std::string>("Ocp-Apim-Subscription-Key", subscriptionKey));
 	headers.insert(std::pair<std::string, std::string>("Content-Type", ContentType));
 
-	string json = post(endpoint,"", &headers, data);
-	//std::cout << "Raw Json Input\n" << json << "\n\n";
+	HttpResponse response = post(endpoint,"", &headers, data);
+	//std::cout << "Raw Json Input\n" << response.content << "\n\n";
 
 };
 
@@ -32,13 +32,11 @@ void Microsoft::CognitiveServices::ComputerVision::Person::TrainGroup(std::strin
 	headers.insert(std::pair<std::string, std::string>("Content-Type", ContentType));
 
 	HttpContent* data = new HttpContent;
-	data->buffer = new char[1]; 
-	//data->buffer[0] = '\0';
+	data->buffer = new char[1]; 	
 	data->size = 0;
 	
-	string json = post(endpoint,"", &headers, data);
-	//std::cout << "Raw Json Input\n" << json << "\n\n";
-
+	HttpResponse response = post(endpoint,"", &headers, data);
+	//std::cout << "Raw Json Input\n" << response.content << "\n\n";
 };
 
 /*
@@ -58,9 +56,8 @@ void Microsoft::CognitiveServices::ComputerVision::Person::CreatePerson(HttpCont
 	headers.insert(std::pair<std::string, std::string>("Ocp-Apim-Subscription-Key", subscriptionKey));
 	headers.insert(std::pair<std::string, std::string>("Content-Type", ContentType));
 
-	string json = post(endpoint,"", &headers, data);
-	//std::cout << "Raw Json Input\n" << json << "\n\n";
-
+	HttpResponse response = post(endpoint,"", &headers, data);
+	//std::cout << "Raw Json Input\n" << response.content << "\n\n";
 };
 
 
@@ -76,8 +73,8 @@ void Microsoft::CognitiveServices::ComputerVision::Person::AddPersonFace(HttpCon
 	headers.insert(std::pair<std::string, std::string>("Ocp-Apim-Subscription-Key", subscriptionKey));
 	headers.insert(std::pair<std::string, std::string>("Content-Type", ContentType));
 
-	string json = post(endpoint,"", &headers, data);
-	//std::cout << "Raw Json Input\n" << json << "\n\n";
+	HttpResponse response = post(endpoint,"", &headers, data);
+	//std::cout << "Raw Json Input\n" << response.content << "\n\n";
 };
 
 /*
@@ -99,9 +96,9 @@ std::string Microsoft::CognitiveServices::ComputerVision::Person::Identify(HttpC
 	headers.insert(std::pair<std::string, std::string>("Ocp-Apim-Subscription-Key", subscriptionKey));
 	headers.insert(std::pair<std::string, std::string>("Content-Type", ContentType));
 
-	string json = post(endpoint,"", &headers, data);
-	//std::cout << "Raw Json Input\n" << json << "\n\n";
-	return json;
+	HttpResponse response = post(endpoint,"", &headers, data);
+	//std::cout << "Raw Json Input\n" << response.content << "\n\n";
+	return response.content;
 };
 
 
@@ -120,8 +117,8 @@ std::string Microsoft::CognitiveServices::ComputerVision::Person::Verify(HttpCon
 	headers.insert(std::pair<std::string, std::string>("Ocp-Apim-Subscription-Key", subscriptionKey));
 	headers.insert(std::pair<std::string, std::string>("Content-Type", ContentType));
 
-	string json = post(endpoint,"", &headers, data);
-	//std::cout << "Raw Json Input\n" << json << "\n\n";
+	HttpResponse response = post(endpoint,"", &headers, data);
+	//std::cout << "Raw Json Input\n" << response.content << "\n\n";
 	
-	return json;
+	return response.content;
 };
