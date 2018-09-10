@@ -87,9 +87,9 @@ HttpResponse post(std::string url, std::string fields, std::map<std::string, std
     res = curl_global_init(CURL_GLOBAL_DEFAULT);
     // Check for errors
     if(res != CURLE_OK) {
-		fprintf(stderr, "curl_global_init() failed: %s\n", curl_easy_strerror(res));
-		result.status = -1;
-		return result;
+        fprintf(stderr, "curl_global_init() failed: %s\n", curl_easy_strerror(res));
+        result.status = -1;
+        return result;
     }
 
     // get a curl handle
@@ -117,8 +117,8 @@ HttpResponse post(std::string url, std::string fields, std::map<std::string, std
             // get verbose debug output please
             //curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
 			
-			curl_easy_setopt(curl, CURLOPT_HEADERFUNCTION, OnReceiveData);
-			curl_easy_setopt(curl, CURLOPT_HEADERDATA, &result);
+            curl_easy_setopt(curl, CURLOPT_HEADERFUNCTION, OnReceiveData);
+            curl_easy_setopt(curl, CURLOPT_HEADERDATA, &result);
 			 
             /*
             If you use POST to a HTTP 1.1 server, you can send data without knowing
@@ -164,9 +164,9 @@ HttpResponse post(std::string url, std::string fields, std::map<std::string, std
                 result.status = -1;
                 fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
             } else {
-				result.status = CURLE_OK;
-				cout << result.raw_headers;
-			}
+                result.status = CURLE_OK;
+                //std::cout << result.raw_headers;
+            }
 
             // always cleanup
             curl_easy_cleanup(curl);
@@ -175,3 +175,59 @@ HttpResponse post(std::string url, std::string fields, std::map<std::string, std
     return result;
 }
  
+HttpResponse get(std::string url, std::map<std::string, std::string>* headers)
+{
+    CURL *curl;
+    CURLcode res;
+
+    HttpResponse result;
+    struct curl_slist *headersList=NULL; // init to NULL is important
+
+    curl = curl_easy_init();
+    if(curl)
+    {
+        curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+
+        if( headers != NULL)
+        {
+            std::map<std::string,std::string>::iterator it = headers->begin();
+            std::string hvalue;
+            for (it=headers->begin(); it!=headers->end(); ++it)
+            {
+                hvalue = it->first;
+                hvalue.append(": ");
+                hvalue.append(it->second);
+
+                //std::cout << hvalue << endl;
+                headersList = curl_slist_append(headersList, hvalue.c_str());
+            }
+
+            if( headersList != NULL)
+                curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headersList);
+        }
+
+        curl_easy_setopt(curl, CURLOPT_HEADERFUNCTION, OnReceiveData);
+        curl_easy_setopt(curl, CURLOPT_HEADERDATA, &result);
+
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &result.content);
+
+        // Perform the request, res will get the return code
+        res = curl_easy_perform(curl);
+        if(res != CURLE_OK)
+        {
+            result.status = -1;
+            fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
+        } else {
+            result.status = CURLE_OK;
+            //std::cout << result.raw_headers;
+            //std::cout << result.content << std::endl;
+        }
+
+        // always cleanup
+        curl_easy_cleanup(curl);
+    }
+
+    curl_global_cleanup();
+    return result;
+}

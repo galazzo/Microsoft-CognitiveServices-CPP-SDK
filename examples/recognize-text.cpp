@@ -3,6 +3,8 @@
 
 #include <fstream>      // std::ifstream
 
+#include <unistd.h>
+
 #include "microsoft/cognitive/cv/recognize_text.h"
 
 using namespace Microsoft::CognitiveServices::ComputerVision;
@@ -29,8 +31,25 @@ int main(int argc, char **argv)
     wt.size = buffer.size();
     wt.buffer = reinterpret_cast<char*>(buffer.data());
 
-    Text::RecognitionResult result = Text::RecognizeText(&wt, subscriptionKey, "application/octet-stream");
-    result.debug();
+    HttpResponse operation_location = Text::RecognizeText(&wt, subscriptionKey, "application/octet-stream");
+
+    bool wait = false;
+    Text::RecognitionResult result;
+
+    do {
+        result = Text::RecognizeTextOperationResult(operation_location.content, subscriptionKey, "application/octet-stream");
+        result.debug();
+
+        if (result.status() == "Succeeded" || result.status() == "Failed") {
+            wait = false;
+        }
+        else
+        {
+            wait = true;
+            sleep(2);
+        }
+
+    } while( wait );
 
     return 0;
 }

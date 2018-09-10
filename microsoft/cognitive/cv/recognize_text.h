@@ -21,6 +21,8 @@ public:
     const std::string status();	    
     std::vector<Microsoft::CognitiveServices::ComputerVision::Text::Line> lines();
 
+    //std::string status();
+
     void debug();
 
 private:
@@ -28,6 +30,6 @@ private:
     std::vector<Microsoft::CognitiveServices::ComputerVision::Text::Line> _lines;    
 };
 
-Microsoft::CognitiveServices::ComputerVision::Text::RecognitionResult Microsoft::CognitiveServices::ComputerVision::Text::RecognizeText(HttpContent* data, std::string subscriptionKey, std::string ContentType="application/octet-stream");
-
+//HttpResponse Microsoft::CognitiveServices::ComputerVision::Text::RecognizeText(HttpContent* data, std::string subscriptionKey, std::string ContentType="application/octet-stream");
+//Microsoft::CognitiveServices::ComputerVision::Text::RecognitionResult Microsoft::CognitiveServices::ComputerVision::Text::RecognizeTextOperationResult(std::string url, std::string subscriptionKey, std::string ContentType="application/octet-stream");
 #endif

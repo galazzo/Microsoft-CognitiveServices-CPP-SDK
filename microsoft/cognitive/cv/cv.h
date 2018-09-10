@@ -26,25 +26,32 @@ namespace Microsoft {
             Analysis describe(HttpContent* data, std::string subscriptionKey, std::string ContentType);
             Analysis analyze(HttpContent* data, std::string subscriptionKey, std::string ContentType);
 			
-			namespace Text {
-				struct Word;
-				struct Line;				
-				using BoundingBox = std::array<int, 8>;
-				class RecognitionResult;
-				RecognitionResult RecognizeText(HttpContent* data, std::string subscriptionKey, std::string ContentType);
-			}
-			
-			namespace Person 
-			{
-				void CreateGroup(HttpContent* data, std::string personGroupId, std::string subscriptionKey, std::string ContentType);
-				void TrainGroup(std::string personGroupId, std::string subscriptionKey, std::string ContentType);
-				void CreatePerson(HttpContent* data, std::string personGroupId, std::string subscriptionKey, std::string ContentType);
-				void AddPersonFace(HttpContent* data, std::string personGroupId, std::string personId,std::string subscriptionKey, std::string ContentType);
-				std::string Identify(HttpContent* data, std::string subscriptionKey, std::string ContentType);
-				std::string Verify(HttpContent* data, std::string subscriptionKey, std::string ContentType);				
-			}
-			
-			
+            namespace Text {
+
+                /*enum Status {
+                    Succeeded = "Succeeded",
+                    Failed = "Failed",
+                    Running = "Running",
+                    Not_started = "Not started"
+                };*/
+
+                struct Word;
+                struct Line;
+                using BoundingBox = std::array<int, 8>;
+                class RecognitionResult;
+                HttpResponse RecognizeText(HttpContent* data, std::string subscriptionKey, std::string ContentType="application/octet-stream");
+                RecognitionResult RecognizeTextOperationResult(std::string url, std::string subscriptionKey, std::string ContentType="application/octet-stream");
+            }
+
+            namespace Person
+            {
+                void CreateGroup(HttpContent* data, std::string personGroupId, std::string subscriptionKey, std::string ContentType);
+                void TrainGroup(std::string personGroupId, std::string subscriptionKey, std::string ContentType);
+                void CreatePerson(HttpContent* data, std::string personGroupId, std::string subscriptionKey, std::string ContentType);
+                void AddPersonFace(HttpContent* data, std::string personGroupId, std::string personId,std::string subscriptionKey, std::string ContentType);
+                std::string Identify(HttpContent* data, std::string subscriptionKey, std::string ContentType);
+                std::string Verify(HttpContent* data, std::string subscriptionKey, std::string ContentType);
+            }
         }
     }
 }
@@ -123,12 +130,24 @@ struct Microsoft::CognitiveServices::ComputerVision::Metadata {
 };
 
 struct Microsoft::CognitiveServices::ComputerVision::Text::Word {
-	Microsoft::CognitiveServices::ComputerVision::Text::BoundingBox boundingBox;
-	std::string text;
+    Microsoft::CognitiveServices::ComputerVision::Text::BoundingBox boundingBox;
+    std::string text;
+
+    /*Word(){
+        for(int i=0; i < 8; i++) {
+            boundingBox[i] = -1;
+        }
+    }
+
+    Word(const Word &A)
+    {
+        this->text = A.text;
+        std::copy(std::begin(A.boundingBox), std::end(A.boundingBox), std::begin(this->boundingBox));
+    }*/
 };
 
 struct Microsoft::CognitiveServices::ComputerVision::Text::Line : Microsoft::CognitiveServices::ComputerVision::Text::Word {
-	std::vector<Microsoft::CognitiveServices::ComputerVision::Text::BoundingBox> words;	
+    std::vector<Microsoft::CognitiveServices::ComputerVision::Text::Word> words;
 };
 
 #endif
