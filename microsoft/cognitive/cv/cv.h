@@ -25,16 +25,9 @@ namespace Microsoft {
 			
             Analysis describe(HttpContent* data, std::string subscriptionKey, std::string ContentType);
             Analysis analyze(HttpContent* data, std::string subscriptionKey, std::string ContentType);
-			
+
+
             namespace Text {
-
-                /*enum Status {
-                    Succeeded = "Succeeded",
-                    Failed = "Failed",
-                    Running = "Running",
-                    Not_started = "Not started"
-                };*/
-
                 struct Word;
                 struct Line;
                 using BoundingBox = std::array<int, 8>;
