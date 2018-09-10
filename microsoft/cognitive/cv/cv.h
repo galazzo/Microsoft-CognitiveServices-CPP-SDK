@@ -132,18 +132,6 @@ struct Microsoft::CognitiveServices::ComputerVision::Metadata {
 struct Microsoft::CognitiveServices::ComputerVision::Text::Word {
     Microsoft::CognitiveServices::ComputerVision::Text::BoundingBox boundingBox;
     std::string text;
-
-    /*Word(){
-        for(int i=0; i < 8; i++) {
-            boundingBox[i] = -1;
-        }
-    }
-
-    Word(const Word &A)
-    {
-        this->text = A.text;
-        std::copy(std::begin(A.boundingBox), std::end(A.boundingBox), std::begin(this->boundingBox));
-    }*/
 };
 
 struct Microsoft::CognitiveServices::ComputerVision::Text::Line : Microsoft::CognitiveServices::ComputerVision::Text::Word {
