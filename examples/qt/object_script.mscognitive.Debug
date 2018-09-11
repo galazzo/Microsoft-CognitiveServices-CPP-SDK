@@ -1,0 +1,15 @@
+INPUT(
+./debug\analysis.o
+./debug\cv.o
+./debug\description.o
+./debug\person.o
+./debug\recognize_text.o
+./debug\thumbnail.o
+./debug\http.o
+./debug\json_serializable.o
+./debug\gphoto2.o
+./debug\analyze.o
+./debug\camera-ai.o
+./debug\recognize-text.o
+./debug\thumbnail.o
+);

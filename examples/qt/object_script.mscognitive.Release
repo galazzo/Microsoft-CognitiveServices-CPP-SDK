@@ -1,0 +1,15 @@
+INPUT(
+./release\analysis.o
+./release\cv.o
+./release\description.o
+./release\person.o
+./release\recognize_text.o
+./release\thumbnail.o
+./release\http.o
+./release\json_serializable.o
+./release\gphoto2.o
+./release\analyze.o
+./release\camera-ai.o
+./release\recognize-text.o
+./release\thumbnail.o
+);

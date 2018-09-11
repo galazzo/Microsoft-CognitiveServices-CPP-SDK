@@ -276,16 +276,14 @@ void Analysis::debug() {
     }
 }
 
-Microsoft::CognitiveServices::ComputerVision::Analysis Microsoft::CognitiveServices::ComputerVision::describe(HttpContent* data, std::string subscriptionKey, std::string ContentType)
+Microsoft::CognitiveServices::ComputerVision::Analysis Microsoft::CognitiveServices::ComputerVision::describe(HttpContent* data, ApiServerRegion region, std::string subscriptionKey, std::string ContentType)
 {
-	const char* endpoint ="https://westeurope.api.cognitive.microsoft.com/vision/v1.0/describe";
+    std::string endpoint = "https://" + ApiServer(region) + "/vision/v1.0/describe";
 
 	std::map<string, string> headers;
 
 	headers.insert(std::pair<std::string, std::string>("Ocp-Apim-Subscription-Key", subscriptionKey));
 	headers.insert(std::pair<std::string, std::string>("Content-Type", ContentType));
-	//headers.insert(std::pair<std::string, std::string>("Content-Type", "application/octet-stream"));
-	//headers.insert(std::pair<std::string, std::string>("Content-Type", "multipart/form-data"));
 
 	HttpResponse response = post(endpoint,"", &headers, data);
 	Microsoft::CognitiveServices::ComputerVision::Analysis analysis;
@@ -296,16 +294,16 @@ Microsoft::CognitiveServices::ComputerVision::Analysis Microsoft::CognitiveServi
 	return analysis;
 };
 
-Microsoft::CognitiveServices::ComputerVision::Analysis Microsoft::CognitiveServices::ComputerVision::analyze(HttpContent* data, std::string subscriptionKey, std::string ContentType)
-{	
-	const char* endpoint ="https://westeurope.api.cognitive.microsoft.com/vision/v1.0/analyze?visualFeatures=Categories,Tags,Description,Faces,ImageType,Color,Adult&details=Landmarks,Celebrities&language=en";
+Microsoft::CognitiveServices::ComputerVision::Analysis Microsoft::CognitiveServices::ComputerVision::analyze(HttpContent* data, ApiServerRegion region, std::string subscriptionKey, std::string ContentType)
+{
+    std::string endpoint = "https://" + ApiServer(region) + "/vision/v1.0/analyze?visualFeatures=Categories,Tags,Description,Faces,ImageType,Color,Adult&details=Landmarks,Celebrities&language=en";
 
 	std::map<string, string> headers;
 
 	headers.insert(std::pair<std::string, std::string>("Ocp-Apim-Subscription-Key", subscriptionKey));
 	headers.insert(std::pair<std::string, std::string>("Content-Type", ContentType));
-	//headers.insert(std::pair<std::string, std::string>("Content-Type", "application/octet-stream"));
-	//headers.insert(std::pair<std::string, std::string>("Content-Type", "multipart/form-data"));
+
+    std::cout << endpoint << endl;
 
 	HttpResponse response = post(endpoint,"", &headers, data);
 	Microsoft::CognitiveServices::ComputerVision::Analysis analysis;

@@ -6,10 +6,11 @@ using namespace std;
 
 void Microsoft::CognitiveServices::ComputerVision::Person::CreateGroup(HttpContent* data, 
 																		std::string personGroupId, 
+                                                                        ApiServerRegion region,
 																		std::string subscriptionKey,
 																		std::string ContentType)
 {	
-	std::string endpoint = "https://westeurope.api.cognitive.microsoft.com/face/v1.0/persongroups/"+personGroupId;
+    std::string endpoint = "https://" + ApiServer(region) + "/face/v1.0/persongroups/"+personGroupId;
 	std::map<string, string> headers;
 
 	headers.insert(std::pair<std::string, std::string>("Ocp-Apim-Subscription-Key", subscriptionKey));
@@ -21,10 +22,11 @@ void Microsoft::CognitiveServices::ComputerVision::Person::CreateGroup(HttpConte
 };
 
 void Microsoft::CognitiveServices::ComputerVision::Person::TrainGroup(std::string personGroupId,
-																	std::string subscriptionKey,
-																	std::string ContentType)
+                                                                      ApiServerRegion region,
+                                                                      std::string subscriptionKey,
+                                                                      std::string ContentType)
 {
-	std::string endpoint = "https://westeurope.api.cognitive.microsoft.com/face/v1.0/persongroups/"+personGroupId+"/train";
+    std::string endpoint = "https://" + ApiServer(region) + "/face/v1.0/persongroups/"+personGroupId+"/train";
 
 	std::map<string, string> headers;
 
@@ -47,10 +49,11 @@ void Microsoft::CognitiveServices::ComputerVision::Person::TrainGroup(std::strin
 */
 void Microsoft::CognitiveServices::ComputerVision::Person::CreatePerson(HttpContent* data, 
 																		std::string personGroupId,
+                                                                        ApiServerRegion region,
 																		std::string subscriptionKey, 
 																		std::string ContentType)
 {	
-	std::string endpoint="https://westeurope.api.cognitive.microsoft.com/face/v1.0/persongroups/"+personGroupId+"/persons";
+    std::string endpoint = "https://" + ApiServer(region) +"/face/v1.0/persongroups/"+personGroupId+"/persons";
 	std::map<string, string> headers;
 
 	headers.insert(std::pair<std::string, std::string>("Ocp-Apim-Subscription-Key", subscriptionKey));
@@ -64,10 +67,11 @@ void Microsoft::CognitiveServices::ComputerVision::Person::CreatePerson(HttpCont
 void Microsoft::CognitiveServices::ComputerVision::Person::AddPersonFace(HttpContent* data,
 																		std::string personGroupId,
 																		std::string personId,
+                                                                        ApiServerRegion region,
 																		std::string subscriptionKey, 
 																		std::string ContentType)
 {
-	std::string endpoint = 	"https://westus.api.cognitive.microsoft.com/face/v1.0/persongroups/"+personGroupId+"/persons/"+personId+"/persistedFaces";
+    std::string endpoint = "https://" + ApiServer(region) + "/face/v1.0/persongroups/"+personGroupId+"/persons/"+personId+"/persistedFaces";
 	std::map<string, string> headers;
 
 	headers.insert(std::pair<std::string, std::string>("Ocp-Apim-Subscription-Key", subscriptionKey));
@@ -88,9 +92,12 @@ void Microsoft::CognitiveServices::ComputerVision::Person::AddPersonFace(HttpCon
     "confidenceThreshold": 0.5
 }
 */
-std::string Microsoft::CognitiveServices::ComputerVision::Person::Identify(HttpContent* data, std::string subscriptionKey, std::string ContentType)
+std::string Microsoft::CognitiveServices::ComputerVision::Person::Identify(HttpContent* data,
+                                                                           ApiServerRegion region,
+                                                                           std::string subscriptionKey,
+                                                                           std::string ContentType)
 {
-	std::string endpoint = 	"https://westeurope.api.cognitive.microsoft.com/face/v1.0/identify";
+    std::string endpoint = "https://" + ApiServer(region) + "/face/v1.0/identify";
 	std::map<string, string> headers;
 
 	headers.insert(std::pair<std::string, std::string>("Ocp-Apim-Subscription-Key", subscriptionKey));
@@ -109,9 +116,12 @@ std::string Microsoft::CognitiveServices::ComputerVision::Person::Identify(HttpC
     "personGroupId":"sample_group"
 }
 */
-std::string Microsoft::CognitiveServices::ComputerVision::Person::Verify(HttpContent* data, std::string subscriptionKey, std::string ContentType)
+std::string Microsoft::CognitiveServices::ComputerVision::Person::Verify(HttpContent* data,
+                                                                         ApiServerRegion region,
+                                                                         std::string subscriptionKey,
+                                                                         std::string ContentType)
 {
-	std::string endpoint = 	"https://westeurope.api.cognitive.microsoft.com/face/v1.0/verify";
+    std::string endpoint = "https://" + ApiServer(region) + "/face/v1.0/verify";
 	std::map<string, string> headers;
 
 	headers.insert(std::pair<std::string, std::string>("Ocp-Apim-Subscription-Key", subscriptionKey));

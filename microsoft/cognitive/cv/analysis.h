@@ -45,7 +45,7 @@ private:
     std::vector<Microsoft::CognitiveServices::ComputerVision::Face> _faces;
 };
 
-Microsoft::CognitiveServices::ComputerVision::Analysis Microsoft::CognitiveServices::ComputerVision::describe(HttpContent* data, std::string subscriptionKey, std::string ContentType="application/octet-stream");
-Microsoft::CognitiveServices::ComputerVision::Analysis Microsoft::CognitiveServices::ComputerVision::analyze(HttpContent* data, std::string subscriptionKey, std::string ContentType="application/octet-stream");
+//Microsoft::CognitiveServices::ComputerVision::Analysis Microsoft::CognitiveServices::ComputerVision::describe(HttpContent* data, std::string subscriptionKey, std::string ContentType="application/octet-stream");
+//Microsoft::CognitiveServices::ComputerVision::Analysis Microsoft::CognitiveServices::ComputerVision::analyze(HttpContent* data, std::string subscriptionKey, std::string ContentType="application/octet-stream");
 
 #endif

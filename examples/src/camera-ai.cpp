@@ -93,7 +93,7 @@ int main(int argc, char **argv)
         cout << wt.buffer << endl;
         cout << "--------------------------------------------------------" << endl;
 
-        Analysis id = analyze(&wt, subscriptionKey, "application/octet-stream");
+        Analysis id = analyze(&wt, ApiServerRegion::West_Europe, subscriptionKey, "application/octet-stream");
         id.debug();
 		
         Camera.GetConfigValueString((const char *)"viewfinder", &value); cout << "viewfinder: " << value << endl;

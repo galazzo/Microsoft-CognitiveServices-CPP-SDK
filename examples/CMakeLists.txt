@@ -1,6 +1,9 @@
 cmake_minimum_required (VERSION 3.0)
 project (cognitive_services)
 
+set(CMAKE_BINARY_DIR "./bin")
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
+
 ADD_DEFINITIONS(
 	-Wformat-security
 	-fpermissive
@@ -16,17 +19,19 @@ file(GLOB SOURCES
 	../gphoto2-cpp/gphoto2.h
 )
 
-add_executable(analyze analyze.cpp ${SOURCES})
-add_executable(recognize-text recognize-text.cpp ${SOURCES})
-add_executable(camera-ai camera-ai.cpp ${SOURCES} ../gphoto2-cpp/gphoto2.cpp)
+add_executable(analyze src/analyze.cpp ${SOURCES})
+add_executable(recognize-text src/recognize-text.cpp ${SOURCES})
+add_executable(thumbnail src/thumbnail.cpp ${SOURCES})
+add_executable(camera-ai src/camera-ai.cpp ${SOURCES} ../gphoto2-cpp/gphoto2.cpp)
 
-include_directories(".")
+include_directories("src/")
 include_directories("../")
 
 find_package(CURL REQUIRED) 
 include_directories(${CURL_INCLUDE_DIR})
 target_link_libraries(analyze ${CURL_LIBRARIES})
 target_link_libraries(recognize-text ${CURL_LIBRARIES})
+target_link_libraries(thumbnail ${CURL_LIBRARIES})
 target_link_libraries(camera-ai ${CURL_LIBRARIES})
 
 find_package(PkgConfig REQUIRED)
@@ -34,6 +39,7 @@ pkg_check_modules(JSONCPP jsoncpp)
 include_directories(${JSONCPP_INCLUDE_DIRS})
 target_link_libraries(analyze ${JSONCPP_LIBRARIES})
 target_link_libraries(recognize-text ${JSONCPP_LIBRARIES})
+target_link_libraries(thumbnail ${JSONCPP_LIBRARIES})
 target_link_libraries(camera-ai ${JSONCPP_LIBRARIES})
 
 include(FindGphoto2.cmake)

@@ -122,45 +122,38 @@ void Microsoft::CognitiveServices::ComputerVision::Text::RecognitionResult::debu
     }
 }
 
-HttpResponse Microsoft::CognitiveServices::ComputerVision::Text::RecognizeText(HttpContent* data, std::string subscriptionKey, std::string ContentType)
+HttpResponse Microsoft::CognitiveServices::ComputerVision::Text::RecognizeText(HttpContent* data, ApiServerRegion region, std::string subscriptionKey, std::string ContentType)
 {
-	const char* endpoint ="https://westeurope.api.cognitive.microsoft.com/vision/v2.0/recognizeText?mode=Handwritten";
+    std::string endpoint = "https://" + ApiServer(region) + "/vision/v2.0/recognizeText?mode=Handwritten";
 
 	std::map<string, string> headers;
 
 	headers.insert(std::pair<std::string, std::string>("Ocp-Apim-Subscription-Key", subscriptionKey));
 	headers.insert(std::pair<std::string, std::string>("Content-Type", ContentType));
-	//headers.insert(std::pair<std::string, std::string>("Content-Type", "application/octet-stream"));
-	//headers.insert(std::pair<std::string, std::string>("Content-Type", "multipart/form-data"));
 
 	HttpResponse response = post(endpoint,"", &headers, data);	
 
-        std::map<std::string, std::string>::iterator it;
+    std::map<std::string, std::string>::iterator it;
 
-        if ( (it=response.headers.find("Operation-Location")) != response.headers.end() )
-        {
-            // found
-            //cout << it->second << endl;
-            response.content = it->second;
-        } else
-        {
-            // not found
-            cout << "Operation-Location header not found";
-        }
+    if ( (it=response.headers.find("Operation-Location")) != response.headers.end() )
+    {
+        // found
+        response.content = it->second;
+    } else
+    {
+        // not found
+        std::cout << "Operation-Location header not found";
+    }
 
-        return response;
+    return response;
 };
 
 Microsoft::CognitiveServices::ComputerVision::Text::RecognitionResult Microsoft::CognitiveServices::ComputerVision::Text::RecognizeTextOperationResult(std::string url, std::string subscriptionKey, std::string ContentType)
-{
-   // const char* endpoint ="https://westeurope.api.cognitive.microsoft.com/vision/v2.0/recognizeText?mode=Handwritten";
-
+{   
     std::map<string, string> headers;
 
     headers.insert(std::pair<std::string, std::string>("Ocp-Apim-Subscription-Key", subscriptionKey));
     headers.insert(std::pair<std::string, std::string>("Content-Type", ContentType));
-    //headers.insert(std::pair<std::string, std::string>("Content-Type", "application/octet-stream"));
-    //headers.insert(std::pair<std::string, std::string>("Content-Type", "multipart/form-data"));
 
     Microsoft::CognitiveServices::ComputerVision::Text::RecognitionResult analysis;
 
