@@ -3,8 +3,10 @@
 #include <fstream>
 #include <unistd.h>
 
+#include "microsoft/cognitive/cognitive.h"
 #include "microsoft/cognitive/cv/cv.h"
 
+using namespace Microsoft::CognitiveServices;
 using namespace Microsoft::CognitiveServices::ComputerVision;
 
 int main(int argc, char **argv)
@@ -29,7 +31,7 @@ int main(int argc, char **argv)
     wt.size = buffer.size();
     wt.buffer = reinterpret_cast<char*>(buffer.data());
 
-    Image image = generateThumbnail(&wt, 300, 200, true, ApiServerRegion::West_Europe, subscriptionKey, "application/octet-stream");
+    Image image = GenerateThumbnail(&wt, 300, 200, true, ApiServerRegion::West_Europe, subscriptionKey, "application/octet-stream");
 
     Microsoft::CognitiveServices::ComputerVision::ToFile("thumbnail.jpg", image);
 

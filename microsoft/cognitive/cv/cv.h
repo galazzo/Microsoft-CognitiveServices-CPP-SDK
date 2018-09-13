@@ -4,6 +4,7 @@
 #include <fstream>
 #include <map>
 
+#include "microsoft/cognitive/cognitive.h"
 #include "microsoft/utils/http.h"
 #include "microsoft/utils/json_serializable.h"
 
@@ -14,6 +15,8 @@ namespace Microsoft {
         namespace ComputerVision {
             class Analysis;
             class Description;
+            class DomainSpecificContent;
+            struct DomainModel;
             struct Image;
             struct Caption;
             struct Metadata;
@@ -27,63 +30,48 @@ namespace Microsoft {
             struct Color;
             struct ImageType;
             struct Adult;
-			
-            void ToFile(std::string filename, ios_base::openmode mode, const char* buffer, int size);
-            void ToFile(std::string filename, Image& image);
-
-            enum ApiServerRegion {
-                West_US,
-                West_US_2,
-                East_US,
-                East_US_2,
-                West_Central_US,
-                South_Central_US,
-                West_Europe,
-                North_Europe,
-                Southeast_Asia,
-                East_Asia,
-                Australia_East,
-                Brazil_South,
-                Canada_Central,
-                Central_India,
-                UK_South,
-                Japan_East
-            };
-
-            std::string ApiServer(ApiServerRegion);
-
-            Analysis describe(HttpContent* data, ApiServerRegion region, std::string subscriptionKey, std::string ContentType);
-            Analysis analyze(HttpContent* data, ApiServerRegion region, std::string subscriptionKey, std::string ContentType);
-            Microsoft::CognitiveServices::ComputerVision::Image generateThumbnail(HttpContent* data, int width, int height, bool smartCropping, ApiServerRegion region, std::string subscriptionKey, std::string ContentType);
 
             namespace Text {
                 struct Word;
                 struct Line;
-                using BoundingBox = std::array<int, 8>;
+                struct Region;
                 class RecognitionResult;
+                class OcrResult;
+                struct OcrSettings;
+
                 HttpResponse RecognizeText(HttpContent* data, ApiServerRegion region, std::string subscriptionKey, std::string ContentType="application/octet-stream");
                 RecognitionResult RecognizeTextOperationResult(std::string url, std::string subscriptionKey, std::string ContentType="application/octet-stream");
+                OcrResult OCR(HttpContent* data, ApiServerRegion region, std::string subscriptionKey, std::string ContentType="application/octet-stream");
             }
 
             namespace Person
             {
-                void CreateGroup(HttpContent* data, std::string personGroupId, ApiServerRegion region, std::string subscriptionKey, std::string ContentType);
-                void TrainGroup(std::string personGroupId, ApiServerRegion region, std::string subscriptionKey, std::string ContentType);
-                void CreatePerson(HttpContent* data, std::string personGroupId, ApiServerRegion region,  std::string subscriptionKey, std::string ContentType);
-                void AddPersonFace(HttpContent* data, std::string personGroupId, std::string personId, ApiServerRegion region, std::string subscriptionKey, std::string ContentType);
-                std::string Identify(HttpContent* data, ApiServerRegion region, std::string subscriptionKey, std::string ContentType);
-                std::string Verify(HttpContent* data, ApiServerRegion region, std::string subscriptionKey, std::string ContentType);
+                void CreateGroup(HttpContent* data, std::string personGroupId, ApiServerRegion region, std::string subscriptionKey, std::string ContentType="application/octet-stream");
+                void TrainGroup(std::string personGroupId, ApiServerRegion region, std::string subscriptionKey, std::string ContentType="application/octet-stream");
+                void CreatePerson(HttpContent* data, std::string personGroupId, ApiServerRegion region,  std::string subscriptionKey, std::string ContentType="application/octet-stream");
+                void AddPersonFace(HttpContent* data, std::string personGroupId, std::string personId, ApiServerRegion region, std::string subscriptionKey, std::string ContentType="application/octet-stream");
+                std::string Identify(HttpContent* data, ApiServerRegion region, std::string subscriptionKey, std::string ContentType="application/octet-stream");
+                std::string Verify(HttpContent* data, ApiServerRegion region, std::string subscriptionKey, std::string ContentType="application/octet-stream");
             }
+
+            Analysis Describe(HttpContent* data, ApiServerRegion region, std::string subscriptionKey, std::string ContentType="application/octet-stream");
+            Analysis Analyze(HttpContent* data, ApiServerRegion region, std::string subscriptionKey, std::string ContentType="application/octet-stream");
+            Analysis Tags(HttpContent* data, ApiServerRegion region, std::string subscriptionKey, std::string ContentType="application/octet-stream");
+            Image GenerateThumbnail(HttpContent* data, int width, int height, bool smartCropping, ApiServerRegion region, std::string subscriptionKey, std::string ContentType="application/octet-stream");
+            DomainSpecificContent RecognizeDomainSpecificContent(HttpContent* data,  std::string model, ApiServerRegion region, std::string subscriptionKey, std::string ContentType="application/octet-stream");
+            std::vector<DomainModel> DomainSpecificModels(ApiServerRegion region, std::string subscriptionKey, std::string ContentType="application/octet-stream");
+
+            void ToFile(std::string filename, Image& image);
         }
     }
 }
 
 struct Microsoft::CognitiveServices::ComputerVision::Image {
-  char *buffer;
-  size_t size;
-  std::string content_type;
-  int width;
-  int height;
+    char *buffer;
+    size_t size;
+    std::string content_type;
+    int width;
+    int height;
 };
 
 struct Microsoft::CognitiveServices::ComputerVision::FaceRectangle {
@@ -91,7 +79,7 @@ struct Microsoft::CognitiveServices::ComputerVision::FaceRectangle {
     int top;
     int width;
     int height;
-	int coveringArea;
+    int coveringArea;
 };
 
 struct Microsoft::CognitiveServices::ComputerVision::Face {
@@ -153,19 +141,31 @@ struct Microsoft::CognitiveServices::ComputerVision::Caption {
 };
 
 struct Microsoft::CognitiveServices::ComputerVision::Metadata {
-
     int width;
     int height;
     std::string format;
 };
 
+struct Microsoft::CognitiveServices::ComputerVision::DomainModel {
+    std::string name;
+    std::vector<std::string> categories;
+
+    void debug();
+};
+
+
 struct Microsoft::CognitiveServices::ComputerVision::Text::Word {
-    Microsoft::CognitiveServices::ComputerVision::Text::BoundingBox boundingBox;
+    Microsoft::CognitiveServices::BoundingBox boundingBox;
     std::string text;
 };
 
 struct Microsoft::CognitiveServices::ComputerVision::Text::Line : Microsoft::CognitiveServices::ComputerVision::Text::Word {
     std::vector<Microsoft::CognitiveServices::ComputerVision::Text::Word> words;
+};
+
+struct Microsoft::CognitiveServices::ComputerVision::Text::Region  {
+    Microsoft::CognitiveServices::BoundingBox boundingBox;
+    std::vector<Microsoft::CognitiveServices::ComputerVision::Text::Line> lines;
 };
 
 #endif

@@ -3,7 +3,6 @@
 #define COGNITIVE_CV_DESCRIPTION
 
 #include "microsoft/cognitive/cv/cv.h"
-//#include "microsoft/utils/json_serializable.h"
 #include <vector>
 
 using namespace std;
@@ -23,7 +22,5 @@ private:
    vector<std::string> _tags;
    vector<Caption> _captions;
 };
-
-//Analysis Microsoft::CognitiveServices::ComputerVision::describe(HttpContent* data, std::string subscriptionKey, std::string ContentType="application/octet-stream");
 
 #endif

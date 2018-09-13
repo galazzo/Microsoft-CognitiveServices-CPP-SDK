@@ -7,7 +7,7 @@
 using namespace std;
 using namespace Microsoft::CognitiveServices::ComputerVision;
 
-Microsoft::CognitiveServices::ComputerVision::Image Microsoft::CognitiveServices::ComputerVision::generateThumbnail(HttpContent* data, int width, int height, bool smartCropping, ApiServerRegion region, std::string subscriptionKey, std::string ContentType="application/octet-stream")
+Microsoft::CognitiveServices::ComputerVision::Image Microsoft::CognitiveServices::ComputerVision::GenerateThumbnail(HttpContent* data, int width, int height, bool smartCropping, ApiServerRegion region, std::string subscriptionKey, std::string ContentType)
 {
     std::string endpoint = "https://" + ApiServer(region) + "/vision/v2.0/generateThumbnail?width="+std::to_string(width)+"&height="+std::to_string(height)+"&smartCropping=" + ( smartCropping ? "true" : "false");
 

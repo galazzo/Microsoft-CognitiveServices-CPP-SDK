@@ -1,6 +1,5 @@
 INPUT(
 ./release\analysis.o
-./release\cv.o
 ./release\description.o
 ./release\person.o
 ./release\recognize_text.o
@@ -12,4 +11,15 @@ INPUT(
 ./release\camera-ai.o
 ./release\recognize-text.o
 ./release\thumbnail.o
+./release\tag.o
+./release\describe.o
+./release\analysis.o
+./release\description.o
+./release\person.o
+./release\recognize_text.o
+./release\thumbnail.o
+./release\cognitive.o
+./release\cv.o
+./release\ocr.o
+./release\ocr.o
 );

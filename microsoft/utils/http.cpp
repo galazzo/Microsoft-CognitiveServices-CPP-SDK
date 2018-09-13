@@ -105,11 +105,14 @@ HttpResponse post(std::string url, std::string fields, std::map<std::string, std
             // Now specify we want to POST data
             curl_easy_setopt(curl, CURLOPT_POST, 1L);
 
-            // we want to use our own read function
-            curl_easy_setopt(curl, CURLOPT_READFUNCTION, ReadCallback);
+            if( body != nullptr)
+            {
+                // we want to use our own read function
+                curl_easy_setopt(curl, CURLOPT_READFUNCTION, ReadCallback);
 
-            // pointer to pass to our read function
-            curl_easy_setopt(curl, CURLOPT_READDATA, &(*body));
+                // pointer to pass to our read function
+                curl_easy_setopt(curl, CURLOPT_READDATA, &(*body));
+            }
 
             curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
             curl_easy_setopt(curl, CURLOPT_WRITEDATA, &result.content);

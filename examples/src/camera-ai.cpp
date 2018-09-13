@@ -3,10 +3,6 @@
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
-//#include <gphoto2/gphoto2-camera.h>
-#include "microsoft/cognitive/cv/description.h"
-#include "microsoft/cognitive/cv/analysis.h"
-#include "gphoto2-cpp/gphoto2.h"
 
 #include <json/json.h>
 
@@ -17,7 +13,12 @@
 #include <iostream>
 #include <fstream>
 
+#include "microsoft/cognitive/cognitive.h"
+#include "microsoft/cognitive/cv/analysis.h"
+#include "gphoto2-cpp/gphoto2.h"
+
 using namespace std;
+using namespace Microsoft::CognitiveServices;
 using namespace Microsoft::CognitiveServices::ComputerVision;
 using namespace Gphoto2;
 
@@ -93,7 +94,7 @@ int main(int argc, char **argv)
         cout << wt.buffer << endl;
         cout << "--------------------------------------------------------" << endl;
 
-        Analysis id = analyze(&wt, ApiServerRegion::West_Europe, subscriptionKey, "application/octet-stream");
+        Analysis id = Analyze(&wt, ApiServerRegion::West_Europe, subscriptionKey, "application/octet-stream");
         id.debug();
 		
         Camera.GetConfigValueString((const char *)"viewfinder", &value); cout << "viewfinder: " << value << endl;

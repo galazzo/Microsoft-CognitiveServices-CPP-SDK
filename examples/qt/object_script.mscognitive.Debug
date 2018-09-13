@@ -1,6 +1,5 @@
 INPUT(
 ./debug\analysis.o
-./debug\cv.o
 ./debug\description.o
 ./debug\person.o
 ./debug\recognize_text.o
@@ -12,4 +11,15 @@ INPUT(
 ./debug\camera-ai.o
 ./debug\recognize-text.o
 ./debug\thumbnail.o
+./debug\tag.o
+./debug\describe.o
+./debug\analysis.o
+./debug\description.o
+./debug\person.o
+./debug\recognize_text.o
+./debug\thumbnail.o
+./debug\cognitive.o
+./debug\cv.o
+./debug\ocr.o
+./debug\ocr.o
 );

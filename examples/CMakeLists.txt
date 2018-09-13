@@ -14,14 +14,20 @@ ADD_DEFINITIONS(
 file(GLOB SOURCES
     ../microsoft/cognitive/cv/*.h
     ../microsoft/cognitive/cv/*.cpp
+	../microsoft/cognitive/*.h
+    ../microsoft/cognitive/*.cpp
 	../microsoft/utils/*.h
     ../microsoft/utils/*.cpp	
 	../gphoto2-cpp/gphoto2.h
 )
 
 add_executable(analyze src/analyze.cpp ${SOURCES})
+add_executable(describe src/describe.cpp ${SOURCES})
+add_executable(tag src/tag.cpp ${SOURCES})
 add_executable(recognize-text src/recognize-text.cpp ${SOURCES})
 add_executable(thumbnail src/thumbnail.cpp ${SOURCES})
+add_executable(ocr src/ocr.cpp ${SOURCES})
+add_executable(recognize-domain-specific-content src/recognize-domain-specific-content.cpp ${SOURCES})
 add_executable(camera-ai src/camera-ai.cpp ${SOURCES} ../gphoto2-cpp/gphoto2.cpp)
 
 include_directories("src/")
@@ -30,16 +36,24 @@ include_directories("../")
 find_package(CURL REQUIRED) 
 include_directories(${CURL_INCLUDE_DIR})
 target_link_libraries(analyze ${CURL_LIBRARIES})
+target_link_libraries(describe ${CURL_LIBRARIES})
+target_link_libraries(tag ${CURL_LIBRARIES})
 target_link_libraries(recognize-text ${CURL_LIBRARIES})
 target_link_libraries(thumbnail ${CURL_LIBRARIES})
+target_link_libraries(ocr ${CURL_LIBRARIES})
+target_link_libraries(recognize-domain-specific-content ${CURL_LIBRARIES})
 target_link_libraries(camera-ai ${CURL_LIBRARIES})
 
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(JSONCPP jsoncpp)
 include_directories(${JSONCPP_INCLUDE_DIRS})
 target_link_libraries(analyze ${JSONCPP_LIBRARIES})
+target_link_libraries(describe ${JSONCPP_LIBRARIES})
+target_link_libraries(tag ${JSONCPP_LIBRARIES})
 target_link_libraries(recognize-text ${JSONCPP_LIBRARIES})
 target_link_libraries(thumbnail ${JSONCPP_LIBRARIES})
+target_link_libraries(ocr ${JSONCPP_LIBRARIES})
+target_link_libraries(recognize-domain-specific-content ${JSONCPP_LIBRARIES})
 target_link_libraries(camera-ai ${JSONCPP_LIBRARIES})
 
 include(FindGphoto2.cmake)

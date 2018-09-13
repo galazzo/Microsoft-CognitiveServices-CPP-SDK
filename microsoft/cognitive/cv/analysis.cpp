@@ -180,6 +180,10 @@ const Color Analysis::color(){
     return this->_color;
 }
 
+const vector<Caption>& Analysis::captions() const{
+    return _captions;
+}
+
 void Analysis::debug() {
 
     std::cout << "Metadata:" << endl;
@@ -276,9 +280,27 @@ void Analysis::debug() {
     }
 }
 
-Microsoft::CognitiveServices::ComputerVision::Analysis Microsoft::CognitiveServices::ComputerVision::describe(HttpContent* data, ApiServerRegion region, std::string subscriptionKey, std::string ContentType)
+Microsoft::CognitiveServices::ComputerVision::Analysis Microsoft::CognitiveServices::ComputerVision::Tags(HttpContent* data, ApiServerRegion region, std::string subscriptionKey, std::string ContentType)
 {
-    std::string endpoint = "https://" + ApiServer(region) + "/vision/v1.0/describe";
+    std::string endpoint = "https://" + ApiServer(region) + "/vision/v2.0/tag";
+
+    std::map<string, string> headers;
+
+    headers.insert(std::pair<std::string, std::string>("Ocp-Apim-Subscription-Key", subscriptionKey));
+    headers.insert(std::pair<std::string, std::string>("Content-Type", ContentType));
+
+    HttpResponse response = post(endpoint,"", &headers, data);
+    Microsoft::CognitiveServices::ComputerVision::Analysis analysis;
+    CJsonSerializer::Deserialize( &analysis, response.content );
+
+    //std::cout << "Raw Json Input\n" << response.content << "\n\n";
+
+    return analysis;
+};
+
+Microsoft::CognitiveServices::ComputerVision::Analysis Microsoft::CognitiveServices::ComputerVision::Describe(HttpContent* data, ApiServerRegion region, std::string subscriptionKey, std::string ContentType)
+{
+    std::string endpoint = "https://" + ApiServer(region) + "/vision/v2.0/describe";
 
 	std::map<string, string> headers;
 
@@ -294,9 +316,9 @@ Microsoft::CognitiveServices::ComputerVision::Analysis Microsoft::CognitiveServi
 	return analysis;
 };
 
-Microsoft::CognitiveServices::ComputerVision::Analysis Microsoft::CognitiveServices::ComputerVision::analyze(HttpContent* data, ApiServerRegion region, std::string subscriptionKey, std::string ContentType)
+Microsoft::CognitiveServices::ComputerVision::Analysis Microsoft::CognitiveServices::ComputerVision::Analyze(HttpContent* data, ApiServerRegion region, std::string subscriptionKey, std::string ContentType)
 {
-    std::string endpoint = "https://" + ApiServer(region) + "/vision/v1.0/analyze?visualFeatures=Categories,Tags,Description,Faces,ImageType,Color,Adult&details=Landmarks,Celebrities&language=en";
+    std::string endpoint = "https://" + ApiServer(region) + "/vision/v2.0/analyze?visualFeatures=Categories,Tags,Description,Faces,ImageType,Color,Adult&details=Landmarks,Celebrities&language=en";
 
 	std::map<string, string> headers;
 

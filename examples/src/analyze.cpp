@@ -1,15 +1,16 @@
 #include <iostream>
 #include <string.h>
+#include <fstream>
 
-#include <fstream>      // std::ifstream
-
-#include "microsoft/cognitive/cv/description.h"
+#include "microsoft/cognitive/cognitive.h"
 #include "microsoft/cognitive/cv/analysis.h"
+
+using namespace Microsoft::CognitiveServices;
 
 int main(int argc, char **argv)
 {
-    cout << "Microsoft Cognitive Services in C++" << endl;
-	cout << "Analyze" << endl;
+    std::cout << "Microsoft Cognitive Services in C++" << endl;
+    std::cout << "Analyze" << endl;
 	
     std::ifstream subscriptionKeyFile;
     std::string subscriptionKey;
@@ -28,7 +29,7 @@ int main(int argc, char **argv)
     wt.size = buffer.size();
     wt.buffer = reinterpret_cast<char*>(buffer.data());
 
-    Analysis id = analyze(&wt, ApiServerRegion::West_Europe, subscriptionKey, "application/octet-stream");
+    Analysis id = Analyze(&wt, ApiServerRegion::West_Europe, subscriptionKey, "application/octet-stream");
     id.debug();
 
     return 0;
