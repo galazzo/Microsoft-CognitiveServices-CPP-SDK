@@ -23,4 +23,6 @@ if all packages are found you can run `make -j 4`
 
 one compiled all examples you can test:
 
-`bin/recognize-domain-specific-content -model landmarks -i images/sample06.jpg`
+`recognize-domain-specific-content -model landmarks -i images/sample06.jpg`
+`recognize-domain-specific-content -model celebrities -image images/sample07.jpg`
+'custom-vision -projectid "YOUR PROJECT ID" -source image -i images/sample08.jpg`

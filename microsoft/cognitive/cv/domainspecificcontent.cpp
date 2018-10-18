@@ -77,6 +77,11 @@ void Microsoft::CognitiveServices::ComputerVision::DomainSpecificContent::Deseri
                     celebrity.name = jcelebrity["name"].asString();
                 }
 
+				if (jcelebrity.isMember("confidence"))
+				{
+					celebrity.confidence = jcelebrity["confidence"].asDouble();
+				}
+
                 if(jcelebrity.isMember("faceRectangle"))
                 {
                     Json::Value jfaceRectangle = jcelebrity["faceRectangle"];
@@ -114,6 +119,7 @@ void Microsoft::CognitiveServices::ComputerVision::DomainSpecificContent::debug(
     for (std::vector<Celebrity>::iterator it = _celebrities.begin() ; it != _celebrities.end(); ++it) {
         std::cout << "\t\tcelebrity " << endl;
         std::cout << "\t\t\tname: " << ((Celebrity)(*it)).name << endl;
+		std::cout << "\t\t\tconfidence: " << ((Celebrity)(*it)).confidence << endl;
         std::cout << "\t\t\tfaceRectangle " << endl;
         std::cout << "\t\t\t\tleft " << ((Celebrity)(*it)).faceRectangle.left << endl;
         std::cout << "\t\t\t\ttop " << ((Celebrity)(*it)).faceRectangle.top << endl;
