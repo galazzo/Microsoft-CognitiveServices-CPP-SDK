@@ -32,6 +32,9 @@ void Microsoft::CognitiveServices::ComputerVision::DomainSpecificContent::Serial
 
 void Microsoft::CognitiveServices::ComputerVision::DomainSpecificContent::Deserialize( Json::Value& root )
 {
+	response.status_code = root.isMember("statusCode") ? root["statusCode"].asInt() : 0;
+	response.message = root.isMember("message") ? root["message"].asString() : std::string();
+
     _requestId = root["requestId"].asString();
 
     if( root.isMember("metadata")) {
@@ -99,6 +102,9 @@ void Microsoft::CognitiveServices::ComputerVision::DomainSpecificContent::Deseri
 
 void Microsoft::CognitiveServices::ComputerVision::DomainSpecificContent::debug()
 {
+	std::cout << "status code: " << response.status_code << endl;
+	std::cout << "message: " << response.message << endl;
+	std::cout << endl;
 
     std::cout << "requestId: " << _requestId << endl;
 
@@ -145,6 +151,30 @@ Microsoft::CognitiveServices::ComputerVision::DomainSpecificContent Microsoft::C
     //std::cout << "Raw Json Input\n" << response.content << "\n\n";
 
     return analysis;
+};
+
+Microsoft::CognitiveServices::ComputerVision::DomainSpecificContent Microsoft::CognitiveServices::ComputerVision::RecognizeDomainSpecificContent(std::string url, std::string model, ApiServerRegion region, std::string subscriptionKey, std::string ContentType)
+{
+	std::string endpoint = "https://" + ApiServer(region) + "/vision/v2.0/models/" + model + "/analyze";
+
+	HttpContent data;
+	std::string json = "{\"url\": \"" + url + "\"}";
+	data.buffer = new char[json.size() + 1];
+	strcpy(data.buffer, json.c_str());
+	data.size = json.size() + 1;
+
+	std::map<string, string> headers;
+
+	headers.insert(std::pair<std::string, std::string>("Ocp-Apim-Subscription-Key", subscriptionKey));
+	headers.insert(std::pair<std::string, std::string>("Content-Type", ContentType));
+
+	HttpResponse response = post(endpoint, "", &headers, &data);
+	Microsoft::CognitiveServices::ComputerVision::DomainSpecificContent analysis;
+	CJsonSerializer::Deserialize(&analysis, response.content);
+
+	//std::cout << "Raw Json Input\n" << response.content << "\n\n";
+
+	return analysis;
 };
 
 std::vector<Microsoft::CognitiveServices::ComputerVision::DomainModel> Microsoft::CognitiveServices::ComputerVision::DomainSpecificModels(ApiServerRegion region, std::string subscriptionKey, std::string ContentType)

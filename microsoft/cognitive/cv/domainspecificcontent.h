@@ -2,7 +2,6 @@
 #define DOMAINSPECIFICCONTENT_H
 
 #include "microsoft/cognitive/cv/cv.h"
-#include "microsoft/cognitive/cv/description.h"
 #include "microsoft/utils/json_serializable.h"
 #include <vector>
 
@@ -10,7 +9,7 @@ using namespace std;
 using namespace Microsoft::CognitiveServices;
 using namespace Microsoft::CognitiveServices::ComputerVision;
 
-class Microsoft::CognitiveServices::ComputerVision::DomainSpecificContent : public IJsonSerializable
+class Microsoft::CognitiveServices::ComputerVision::DomainSpecificContent : public IJsonSerializable, Microsoft::CognitiveServices::Result
 {
 public:
     DomainSpecificContent();

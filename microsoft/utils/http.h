@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <regex>
+#include <vector>
 
 using namespace std;
 
@@ -25,5 +27,7 @@ static size_t WriteCallback(void *content, size_t size, size_t nmemb, void *user
 
 HttpResponse get(std::string url, std::map<std::string, std::string>* headers=NULL);
 HttpResponse post(std::string url, std::string fields, std::map<std::string, std::string>* headers=NULL, HttpContent* body = NULL);
+
+bool isUrl(std::string value);
 
 #endif

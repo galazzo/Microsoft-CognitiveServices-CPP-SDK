@@ -34,6 +34,9 @@ void Microsoft::CognitiveServices::ComputerVision::Text::OcrResult::Serialize( J
 
 void Microsoft::CognitiveServices::ComputerVision::Text::OcrResult::Deserialize( Json::Value& root )
 {
+	response.status_code = root.isMember("statusCode") ? root["statusCode"].asInt() : 0;
+	response.message = root.isMember("message") ? root["message"].asString() : std::string();
+
     _language = root["language"].asString();
     _orientation = root["orientation"].asString();
     _textAngle = root["textAngle"].asDouble();
@@ -130,6 +133,10 @@ void Microsoft::CognitiveServices::ComputerVision::Text::OcrResult::Deserialize(
 
 void Microsoft::CognitiveServices::ComputerVision::Text::OcrResult::debug()
 {
+	std::cout << "status code: " << response.status_code << endl;
+	std::cout << "message: " << response.message << endl;
+	std::cout << endl;
+
     std::cout << "language " << _language << endl;
     std::cout << "orientation " << _orientation << endl;
     std::cout << "textAngle " << std::to_string(_textAngle) << endl;
@@ -197,4 +204,28 @@ Microsoft::CognitiveServices::ComputerVision::Text::OcrResult Microsoft::Cogniti
     CJsonSerializer::Deserialize( &analysis, response.content );
 
     return analysis;
+}
+
+Microsoft::CognitiveServices::ComputerVision::Text::OcrResult Microsoft::CognitiveServices::ComputerVision::Text::OCR(std::string url, ApiServerRegion region, std::string subscriptionKey, std::string ContentType) {
+
+	std::string endpoint = "https://" + ApiServer(region) + "/vision/v2.0/ocr?language=unk&detectOrientation=true";
+
+	HttpContent data;
+	std::string json = "{\"url\": \"" + url + "\"}";
+	data.buffer = new char[json.size() + 1];
+	strcpy(data.buffer, json.c_str());
+	data.size = json.size() + 1;
+
+	std::map<string, string> headers;
+
+	headers.insert(std::pair<std::string, std::string>("Ocp-Apim-Subscription-Key", subscriptionKey));
+	headers.insert(std::pair<std::string, std::string>("Content-Type", ContentType));
+
+	HttpResponse response = post(endpoint, "", &headers, &data);
+
+	Microsoft::CognitiveServices::ComputerVision::Text::OcrResult analysis;
+
+	CJsonSerializer::Deserialize(&analysis, response.content);
+
+	return analysis;
 }

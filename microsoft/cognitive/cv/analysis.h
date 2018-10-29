@@ -10,7 +10,7 @@ using namespace std;
 using namespace Microsoft::CognitiveServices;
 using namespace Microsoft::CognitiveServices::ComputerVision;
 
-class Microsoft::CognitiveServices::ComputerVision::Analysis : public IJsonSerializable {
+class Microsoft::CognitiveServices::ComputerVision::Analysis : public IJsonSerializable, Microsoft::CognitiveServices::Result {
 public:
 
     Analysis( void );

@@ -18,6 +18,9 @@ void Microsoft::CognitiveServices::ComputerVision::Text::RecognitionResult::Seri
 
 void Microsoft::CognitiveServices::ComputerVision::Text::RecognitionResult::Deserialize( Json::Value& root )
 {
+	response.status_code = root.isMember("statusCode") ? root["statusCode"].asInt() : 0;
+	response.message = root.isMember("message") ? root["message"].asString() : std::string();
+
     _status = root["status"].asString();
 	
     if( root.isMember("recognitionResult")) {
@@ -85,6 +88,10 @@ std::vector<Microsoft::CognitiveServices::ComputerVision::Text::Line> Microsoft:
 
 void Microsoft::CognitiveServices::ComputerVision::Text::RecognitionResult::debug()
 {
+	std::cout << "status code: " << response.status_code << endl;
+	std::cout << "message: " << response.message << endl;
+	std::cout << endl;
+
     std::cout << "status " << _status << endl;
 
     std::cout << "recognitionResult" << endl;
@@ -134,7 +141,7 @@ HttpResponse Microsoft::CognitiveServices::ComputerVision::Text::RecognizeText(H
 	HttpResponse response = post(endpoint,"", &headers, data);	
 
     std::map<std::string, std::string>::iterator it;
-
+		
     if ( (it=response.headers.find("Operation-Location")) != response.headers.end() )
     {
         // found
@@ -146,6 +153,39 @@ HttpResponse Microsoft::CognitiveServices::ComputerVision::Text::RecognizeText(H
     }
 
     return response;
+};
+
+HttpResponse Microsoft::CognitiveServices::ComputerVision::Text::RecognizeText(std::string url, ApiServerRegion region, std::string subscriptionKey, std::string ContentType)
+{
+	std::string endpoint = "https://" + ApiServer(region) + "/vision/v2.0/recognizeText?mode=Handwritten";
+
+	HttpContent data;
+	std::string json = "{\"url\": \"" + url + "\"}";
+	data.buffer = new char[json.size() + 1];
+	strcpy(data.buffer, json.c_str());
+	data.size = json.size() + 1;
+
+	std::map<string, string> headers;
+
+	headers.insert(std::pair<std::string, std::string>("Ocp-Apim-Subscription-Key", subscriptionKey));
+	headers.insert(std::pair<std::string, std::string>("Content-Type", ContentType));
+
+	HttpResponse response = post(endpoint, "", &headers, &data);
+
+	std::map<std::string, std::string>::iterator it;
+
+	if ((it = response.headers.find("Operation-Location")) != response.headers.end())
+	{
+		// found
+		response.content = it->second;
+	}
+	else
+	{
+		// not found
+		std::cout << "Operation-Location header not found";
+	}
+
+	return response;
 };
 
 Microsoft::CognitiveServices::ComputerVision::Text::RecognitionResult Microsoft::CognitiveServices::ComputerVision::Text::RecognizeTextOperationResult(std::string url, std::string subscriptionKey, std::string ContentType)

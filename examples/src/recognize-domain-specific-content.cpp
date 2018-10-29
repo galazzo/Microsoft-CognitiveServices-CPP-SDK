@@ -54,25 +54,33 @@ int main(int argc, char **argv)
     std::getline(subscriptionKeyFile, subscriptionKey);
     subscriptionKeyFile.close();
 
-    HttpContent wt;
+	std::vector<Microsoft::CognitiveServices::ComputerVision::DomainModel> models = Microsoft::CognitiveServices::ComputerVision::DomainSpecificModels(ApiServerRegion::West_Europe, subscriptionKey, "application/octet-stream");
+	for (std::vector<Microsoft::CognitiveServices::ComputerVision::DomainModel>::iterator it = models.begin(); it != models.end(); ++it)
+	{
+		((Microsoft::CognitiveServices::ComputerVision::DomainModel)(*it)).debug();
+	}
 
-    std::ifstream inputfs;
-    inputfs.open(input, std::ios::binary );
+	if (isUrl(input))
+	{
+		DomainSpecificContent result = RecognizeDomainSpecificContent(input, model, ApiServerRegion::West_Europe, subscriptionKey);
+		result.debug();
+	}
+	else
+	{
+		HttpContent wt;
 
-    // copies all data into buffer
-    std::vector<char> buffer((std::istreambuf_iterator<char>(inputfs)), (std::istreambuf_iterator<char>()));
+		std::ifstream inputfs;
+		inputfs.open(input, std::ios::binary);
 
-    wt.size = buffer.size();
-    wt.buffer = reinterpret_cast<char*>(buffer.data());
+		// copies all data into buffer
+		std::vector<char> buffer((std::istreambuf_iterator<char>(inputfs)), (std::istreambuf_iterator<char>()));
 
-    std::vector<Microsoft::CognitiveServices::ComputerVision::DomainModel> models = Microsoft::CognitiveServices::ComputerVision::DomainSpecificModels(ApiServerRegion::West_Europe, subscriptionKey, "application/octet-stream");
-    for (std::vector<Microsoft::CognitiveServices::ComputerVision::DomainModel>::iterator it = models.begin() ; it != models.end(); ++it)
-    {
-       ((Microsoft::CognitiveServices::ComputerVision::DomainModel)(*it)).debug();
-    }
+		wt.size = buffer.size();
+		wt.buffer = reinterpret_cast<char*>(buffer.data());
 
-    DomainSpecificContent result = RecognizeDomainSpecificContent(&wt, model, ApiServerRegion::West_Europe, subscriptionKey, "application/octet-stream");
-    result.debug();
+		DomainSpecificContent result = RecognizeDomainSpecificContent(&wt, model, ApiServerRegion::West_Europe, subscriptionKey);
+		result.debug();
+	}
 
     return 0;
 }

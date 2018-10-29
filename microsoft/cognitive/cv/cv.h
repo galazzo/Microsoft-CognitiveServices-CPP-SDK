@@ -4,6 +4,7 @@
 #include <fstream>
 #include <map>
 
+#include <json/json.h>
 #include "microsoft/cognitive/cognitive.h"
 #include "microsoft/utils/http.h"
 #include "microsoft/utils/json_serializable.h"
@@ -44,9 +45,13 @@ namespace Microsoft
                 class OcrResult;
                 struct OcrSettings;
 
-                HttpResponse RecognizeText(HttpContent* data, ApiServerRegion region, std::string subscriptionKey, std::string ContentType="application/octet-stream");
+                HttpResponse RecognizeText(std::string url, ApiServerRegion region, std::string subscriptionKey, std::string ContentType= "application/json");
+				HttpResponse RecognizeText(HttpContent* data, ApiServerRegion region, std::string subscriptionKey, std::string ContentType = "application/octet-stream");
+
                 RecognitionResult RecognizeTextOperationResult(std::string url, std::string subscriptionKey, std::string ContentType="application/octet-stream");
-                OcrResult OCR(HttpContent* data, ApiServerRegion region, std::string subscriptionKey, std::string ContentType="application/octet-stream");
+
+				OcrResult OCR(std::string url, ApiServerRegion region, std::string subscriptionKey, std::string ContentType = "application/json");
+                OcrResult OCR(HttpContent* data, ApiServerRegion region, std::string subscriptionKey, std::string ContentType="application/octet-stream");				
             }
 
             namespace PersonGroup
@@ -71,11 +76,21 @@ namespace Microsoft
 				Microsoft::CognitiveServices::ComputerVision::CustomVision::Prediction PredictImageUrlWithNoStore(std::string url, std::string project_id, ApiServerRegion region, std::string predictionKey, std::string ContentType = "application/json");
 			}
 
+			Analysis Describe(std::string url, ApiServerRegion region, std::string subscriptionKey, std::string ContentType = "application/json");
             Analysis Describe(HttpContent* data, ApiServerRegion region, std::string subscriptionKey, std::string ContentType="application/octet-stream");
-            Analysis Analyze(HttpContent* data, ApiServerRegion region, std::string subscriptionKey, std::string ContentType="application/octet-stream");
+            
+			Analysis Analyze(std::string url, ApiServerRegion region, std::string subscriptionKey, std::string ContentType= "application/json");
+			Analysis Analyze(HttpContent* data, ApiServerRegion region, std::string subscriptionKey, std::string ContentType = "application/octet-stream");
+
+			Analysis Tags(std::string url, ApiServerRegion region, std::string subscriptionKey, std::string ContentType = "application/json");
             Analysis Tags(HttpContent* data, ApiServerRegion region, std::string subscriptionKey, std::string ContentType="application/octet-stream");
-            Image GenerateThumbnail(HttpContent* data, int width, int height, bool smartCropping, ApiServerRegion region, std::string subscriptionKey, std::string ContentType="application/octet-stream");
+
+            Image GenerateThumbnail(std::string url, int width, int height, bool smartCropping, ApiServerRegion region, std::string subscriptionKey, std::string ContentType= "application/json");
+			Image GenerateThumbnail(HttpContent* data, int width, int height, bool smartCropping, ApiServerRegion region, std::string subscriptionKey, std::string ContentType = "application/octet-stream");
+
+			DomainSpecificContent RecognizeDomainSpecificContent(std::string url, std::string model, ApiServerRegion region, std::string subscriptionKey, std::string ContentType = "application/json");
             DomainSpecificContent RecognizeDomainSpecificContent(HttpContent* data,  std::string model, ApiServerRegion region, std::string subscriptionKey, std::string ContentType="application/octet-stream");
+			
             std::vector<DomainModel> DomainSpecificModels(ApiServerRegion region, std::string subscriptionKey, std::string ContentType="application/octet-stream");
 
             void ToFile(std::string filename, Image& image);
@@ -105,6 +120,11 @@ struct Microsoft::CognitiveServices::ComputerVision::FaceRectangle : Microsoft::
     int coveringArea;
 };
 
+struct FaceDetectOptions {
+	bool returnFaceId;
+	bool returnFaceLandmarks;
+};
+
 struct Microsoft::CognitiveServices::ComputerVision::Face 
 {
     int age;
@@ -113,6 +133,8 @@ struct Microsoft::CognitiveServices::ComputerVision::Face
 
 	static std::string Identify(HttpContent* data, ApiServerRegion region, std::string subscriptionKey, std::string ContentType = "application/octet-stream");
 	static std::string Verify(HttpContent* data, ApiServerRegion region, std::string subscriptionKey, std::string ContentType = "application/octet-stream");
+	static std::string Detect(HttpContent* data, Json::Value& options, ApiServerRegion region, std::string subscriptionKey, std::string ContentType = "application/octet-stream");
+	static std::string Detect(std::string url, Json::Value& options, ApiServerRegion region, std::string subscriptionKey, std::string ContentType = "application/json");
 };
 
 struct Microsoft::CognitiveServices::ComputerVision::Celebrity 

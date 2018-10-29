@@ -4,31 +4,29 @@
 #include <unistd.h>
 #include <getopt.h>
 
-#include "microsoft/cognitive/cv/custom_vision_prediction.h"
+#include "microsoft/utils/http.h"
+#include "microsoft/cognitive/cv/cv.h"
 
 using namespace Microsoft::CognitiveServices;
-using namespace Microsoft::CognitiveServices::ComputerVision::CustomVision;
+using namespace Microsoft::CognitiveServices::ComputerVision;
 
-void print_usage() {
-	printf("Usage: custom-vision -source url|image -i images/sample06.jpg|http://www.comstoso.com/sample.jpg -projectid <YOUR PROJECT ID>\n");
+void print_usage() 
+{
+	printf("Usage: face -i images/sample08.jpg | http://www.comstoso.com/sample.jpg -s=visionKey\n");
 }
 
 int main(int argc, char **argv)
 {
 	std::cout << "Microsoft Cognitive Services in C++" << endl;
-	std::cout << "Custom Vision - Predict" << endl;
+	std::cout << "Custom Vision - Face" << endl;
 
-	std::string predictionKeyFilePath = "predictionKey";
-	std::string source;
+	std::string subscriptionKeyFilePath = "visionKey";	
 	std::string input;
-	std::string projectid;
-
+		
 	//Specifying the expected options
 	static struct option long_options[] = {
-		{"predictionKey",      optional_argument,       0,  'k' },
-		{"source",    required_argument, 0,  's' },
-		{"image",   required_argument, 0,  'i' },
-		{"projectid",   required_argument, 0,  'p' },
+		{"subscriptionKey",      optional_argument,       0,  's' },
+		{"image",   required_argument, 0,  'i' },		
 		{0,           0,                 0,  0   }
 	};
 
@@ -36,34 +34,37 @@ int main(int argc, char **argv)
 	int long_index = 0;
 	while ((opt = getopt_long_only(argc, argv, "", long_options, &long_index)) != -1)
 	{
+		cout << "opt: " << opt << " optarg: " << optarg << endl;
+
 		switch (opt) {
-		case 'k': predictionKeyFilePath = optarg;
-			break;
-		case 's': source = optarg;
+		case 's': subscriptionKeyFilePath = optarg;
 			break;
 		case 'i': input = optarg;
-			break;
-		case 'p': projectid = optarg;
-			break;
+			break;		
 		default: print_usage();
 			exit(EXIT_FAILURE);
 		}
 	}
 
-	std::string predictionKey;
-	std::ifstream predictionKeyFile;
-	predictionKeyFile.open(predictionKeyFilePath);
-	std::getline(predictionKeyFile, predictionKey);
-	predictionKeyFile.close();
+	std::string subscriptionKey;
+	std::ifstream subscriptionKeyFile;
+	subscriptionKeyFile.open(subscriptionKeyFilePath);
+	std::getline(subscriptionKeyFile, subscriptionKey);
+	subscriptionKeyFile.close();
 
-	if (source == "url")
-	{
-		Prediction id = PredictImageUrlWithNoStore(input, projectid, ApiServerRegion::South_Central_US, predictionKey);
-		id.debug();
-	}
+	Json::Value options;
 
-	if (source == "image")
+	options["returnFaceId"] = "true";
+	options["returnFaceLandmarks"] = "true";
+
+	if (isUrl(input))
 	{
+		cout << "analyzing url..." << endl;
+		Face::Detect(input, options, ApiServerRegion::West_Europe, subscriptionKey);
+		//id.debug();
+	} else 
+	{
+		cout << "analyzing image..." << endl;
 		HttpContent wt;
 
 		std::ifstream inputfs;
@@ -75,8 +76,8 @@ int main(int argc, char **argv)
 		wt.size = buffer.size();
 		wt.buffer = reinterpret_cast<char*>(buffer.data());
 
-		Prediction id = PredictImageWithNoStore(&wt, projectid, ApiServerRegion::South_Central_US, predictionKey);
-		id.debug();
+		Face::Detect(&wt, options, ApiServerRegion::West_Europe, subscriptionKey);
+		//id.debug();
 	}
 
 	return 0;

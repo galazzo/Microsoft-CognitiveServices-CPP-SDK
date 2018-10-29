@@ -65,6 +65,15 @@ namespace Microsoft {
 
         void ToFile(std::string filename, ios_base::openmode mode, const char* buffer, int size);
 
+		class Result 
+		{
+		public:
+			struct _response 
+			{
+				int status_code;
+				std::string message;
+			} response;
+		};
     }
 }
 

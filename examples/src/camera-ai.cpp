@@ -35,13 +35,23 @@ void print_usage()
 	printf("Usage: camera-ai -source url|image -i images/sample06.jpg|http://www.comstoso.com/sample.jpg -projectid <YOUR PROJECT ID>\n");
 }
 
+// https://askubuntu.com/questions/993876/gphoto2-could-not-claim-the-usb-device
+// ps aux | grep gphoto
+// peter    25802  2.1  0.1 302504  8736 ? Ssl  13 : 10   0 : 00 / usr / lib / gvfs / gvfs - gphoto2 - volume - monitor
+// peter    25814  2.2  0.1 441508 11176 ? Sl   13 : 10   0 : 00 / usr / lib / gvfs / gvfsd - gphoto2 --spawner : 1.3 / org / gtk / gvfs / exec_spaw / 21
+// peter    25835  0.0  0.0  22676  1096 pts / 0    S + 13 : 10   0 : 00 grep --color = auto gphoto
+
+// Although not mentioned in glibc documentation or getopt man page, optional arguments to long style command line parameters require 'equals sign' (=). 
+// Space separating the optional argument from the parameter does not work.
+
+
 //  sudo apt-get install libcurl4-openssl-dev
+
 int main(int argc, char **argv) 
 {
 	std::cout << "Camera AI" << endl;
 
 	std::string subscriptionKeyFilePath = "subscriptionKey";
-	std::string predictionKeyFilePath = "predictionKey";
 		
 	std::string input;
 	std::string model = "landmarks";
@@ -50,12 +60,11 @@ int main(int argc, char **argv)
 
 	//Specifying the expected options
 	static struct option long_options[] = {
-		{"subscriptionKey",      optional_argument,       0,  's' },
-		{"predictionKey",      optional_argument,       0,  'k' },				
+		{"subscriptionKey",      optional_argument,       0,  's' },		
 		{"model",    optional_argument, 0,  'm' },
-		{"projectid",   required_argument, 0,  'p' },
-		{"api",   optional_argument, 0,  'a' },
-		{0,           0,                 0,  0   }
+		{"projectid",   optional_argument, 0,  'p' },
+		{"api",   required_argument, 0,  'a' },
+		{nullptr,           0,                 0,  0   }
 	};
 
 	int opt = 0;
@@ -67,12 +76,8 @@ int main(int argc, char **argv)
 		case 'a': api = optarg;
 			break;
 		case 's': subscriptionKeyFilePath = optarg;
-			break;
-		case 'k': predictionKeyFilePath = optarg;
-			break;
-		case 's': source = optarg;
-			break;
-		case 'i': input = optarg;
+			break;		
+		case 'm': model = optarg;
 			break;
 		case 'p': projectid = optarg;
 			break;
@@ -80,75 +85,65 @@ int main(int argc, char **argv)
 			exit(EXIT_FAILURE);
 		}
 	}
-
+		
 	std::string subscriptionKey;
 	std::ifstream subscriptionKeyFile;
 	subscriptionKeyFile.open(subscriptionKeyFilePath);
 	std::getline(subscriptionKeyFile, subscriptionKey);
 	subscriptionKeyFile.close();
-
-	std::string predictionKey;
-	std::ifstream predictionKeyFile;
-	predictionKeyFile.open(predictionKeyFilePath);
-	std::getline(predictionKeyFile, predictionKey);
-	predictionKeyFile.close();
-
-    std::vector<Gphoto2::DigitalCamera> Cameras = Gphoto2::DigitalCamera::Autodetect();
-
+		
+    std::vector<Gphoto2::DigitalCamera*> Cameras = Gphoto2::DigitalCamera::Autodetect();
+	
     int		ret;
 
     CameraText	text;
 
     if(Cameras.size() > 0)
-    {        
-        Gphoto2::DigitalCamera Camera = Cameras.front();
-        ret = Camera.Open();
+    {
+        Gphoto2::DigitalCamera* Camera = Cameras.front();
+		
+        ret = Camera->Open();
         if ( ret < GP_OK) {
-            std::cout << "cannot open camera " << Camera.Model() << std::endl;
+            std::cout << "cannot open camera " << Camera->Model() << std::endl;
             return -1;
         } else {
-            std::cout << "camera " << Camera.Model() << " opened" << endl;
+            std::cout << "camera " << Camera->Model() << " opened" << endl;
         }
 
-        ret = Camera.CanonEnableCapture(FALSE);
+		std::cout << "camera step #2" << endl;
+        ret = Camera->CanonEnableCapture(FALSE);
         if ( ret < GP_OK) {
-            std::cout << "cannot enable camera " << Camera.Model() << std::endl;
+            std::cout << "cannot enable camera " << Camera->Model() << std::endl;
             return -1;
         } else {
-            std::cout << "camera " << Camera.Model() << " enabled" << endl;
+            std::cout << "camera " << Camera->Model() << " enabled" << endl;
         }
-
-        std::ifstream subscriptionKeyFile;
-        std::string subscriptionKey;
-        subscriptionKeyFile.open("subscriptionKey");
-        std::getline(subscriptionKeyFile, subscriptionKey);
-        subscriptionKeyFile.close();
-
+		
         char* value = new char[256];
-        Camera.GetConfigValueString((const char *)"viewfinder", &value);
+        Camera->GetConfigValueString((const char *)"viewfinder", &value);
         cout << "viewfinder: " << value << endl;
 
-        Camera.GetConfigValueString((const char *)"capture", &value);
+        Camera->GetConfigValueString((const char *)"capture", &value);
         cout << "capture: " << value << endl;
 
-        Camera.GetConfigValueString((const char *)"ownername", &value);
+        Camera->GetConfigValueString((const char *)"ownername", &value);
         cout << "ownername: " << value << endl;
 
-        Camera.GetConfigValueString((const char *)"iso", &value);
+        Camera->GetConfigValueString((const char *)"iso", &value);
         cout << "iso: " << value << endl;
 
-        Camera.GetConfigValueString((const char *)"aperture", &value);
+        Camera->GetConfigValueString((const char *)"aperture", &value);
         cout << "aperture: " << value << endl;
 
-        Camera.GetConfigValueString((const char *)"uilock", &value);
+        Camera->GetConfigValueString((const char *)"uilock", &value);
         cout << "uilock: " << value << endl;
 
-        Camera.GetConfigValueString((const char *)"eosremoterelease", &value);
+        Camera->GetConfigValueString((const char *)"eosremoterelease", &value);
         cout << "eosremoterelease: " << value << endl;
 
         // gphoto2 --set-config viewfinder=0
         struct HttpContent wt;
-        Camera.CapturePreviewToMemory(&wt.buffer, &wt.size);
+        Camera->CapturePreviewToMemory(&wt.buffer, &wt.size);
 
         //wt.readptr = body;
         //wt.sizeleft = strlen(body);
@@ -175,43 +170,37 @@ int main(int argc, char **argv)
 			id.debug();
 		}
 
-		if (api == "custom-vision")
+		if (api == "tags")
 		{
-			if (source == "url")
-			{
-				Prediction id = PredictImageUrlWithNoStore(input, projectid, ApiServerRegion::South_Central_US, predictionKey);
-				id.debug();
-			}
-
-			if (source == "image")
-			{
-				HttpContent wt;
-
-				std::ifstream inputfs;
-				inputfs.open(input, std::ios::binary);
-
-				// copies all data into buffer
-				std::vector<char> buffer((std::istreambuf_iterator<char>(inputfs)), (std::istreambuf_iterator<char>()));
-
-				wt.size = buffer.size();
-				wt.buffer = reinterpret_cast<char*>(buffer.data());
-
-				Prediction id = PredictImageWithNoStore(&wt, projectid, ApiServerRegion::South_Central_US, predictionKey);
-				id.debug();
-			}
+			Analysis id = Tags(&wt, ApiServerRegion::West_Europe, subscriptionKey, "application/octet-stream");
+			id.debug();
+		}
+		
+		if (api == "custom-vision")
+		{	
+			Microsoft::CognitiveServices::ComputerVision::CustomVision::Prediction id = Microsoft::CognitiveServices::ComputerVision::CustomVision::PredictImageWithNoStore(&wt, projectid, ApiServerRegion::South_Central_US, subscriptionKey);
+			id.debug();			
 		}
 
 		if (api == "face")
 		{
+			Json::Value options;
 
+			options["returnFaceId"] = "true";
+			options["returnFaceLandmarks"] = "true";
+			
+			cout << "analyzing image..." << endl;
+			
+			Face::Detect(&wt, options, ApiServerRegion::West_Europe, subscriptionKey);
+			//id.debug();			
 		}
 
-        Camera.GetConfigValueString((const char *)"viewfinder", &value); cout << "viewfinder: " << value << endl;
-        Camera.GetConfigValueString((const char *)"iso", &value);        cout << "iso: " << value << endl;
-		
-        //struct HttpContent wt2;
-        //capture_to_memory(camera, context, &wt2.buffer, &wt2.size);
-        Camera.CaptureToFile("foo.jpg");
+		// After the shot ajust the settings according to the picture analysis
+        //Camera->GetConfigValueString((const char *)"viewfinder", &value); cout << "viewfinder: " << value << endl;
+        //Camera->GetConfigValueString((const char *)"iso", &value);        cout << "iso: " << value << endl;
+		 
+		// Then takes the full frame shot
+        //Camera->CaptureToFile("foo.jpg");
     }
 
     sleep(1);

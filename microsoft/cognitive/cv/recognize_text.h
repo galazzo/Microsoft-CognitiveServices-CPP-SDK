@@ -9,7 +9,7 @@
 using namespace std;
 using namespace Microsoft::CognitiveServices::ComputerVision;
 
-class Microsoft::CognitiveServices::ComputerVision::Text::RecognitionResult : public IJsonSerializable {
+class Microsoft::CognitiveServices::ComputerVision::Text::RecognitionResult : public IJsonSerializable, Microsoft::CognitiveServices::Result {
 public:
 
     RecognitionResult( void );

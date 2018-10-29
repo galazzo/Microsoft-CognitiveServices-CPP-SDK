@@ -13,7 +13,7 @@ struct Microsoft::CognitiveServices::ComputerVision::Text::OcrSettings {
     bool DetectOrientation;
 };
 
-class Microsoft::CognitiveServices::ComputerVision::Text::OcrResult : public IJsonSerializable {
+class Microsoft::CognitiveServices::ComputerVision::Text::OcrResult : public IJsonSerializable, Microsoft::CognitiveServices::Result {
 public:
 
     OcrResult( void );

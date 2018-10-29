@@ -26,7 +26,7 @@ std::string Microsoft::CognitiveServices::ComputerVision::Face::Identify(HttpCon
 	headers.insert(std::pair<std::string, std::string>("Content-Type", ContentType));
 
 	HttpResponse response = post(endpoint, "", &headers, data);
-	//std::cout << "Raw Json Input\n" << response.content << "\n\n";
+	std::cout << "Raw Json Input\n" << response.content << "\n\n";
 	return response.content;
 };
 
@@ -50,8 +50,49 @@ std::string Microsoft::CognitiveServices::ComputerVision::Face::Verify(HttpConte
 	headers.insert(std::pair<std::string, std::string>("Content-Type", ContentType));
 
 	HttpResponse response = post(endpoint, "", &headers, data);
-	//std::cout << "Raw Json Input\n" << response.content << "\n\n";
+	std::cout << "Raw Json Input\n" << response.content << "\n\n";
 
 	return response.content;
 };
 
+std::string Microsoft::CognitiveServices::ComputerVision::Face::Detect(HttpContent* data,
+	Json::Value& options,
+	ApiServerRegion region,
+	std::string subscriptionKey,
+	std::string ContentType)
+{
+	std::string endpoint = "https://" + ApiServer(region) + "/face/v1.0/detect?returnFaceId=" + options["returnFaceId"].asString() + "&returnFaceLandmarks=" + options["returnFaceLandmarks"].asString();
+	std::map<string, string> headers;
+
+	headers.insert(std::pair<std::string, std::string>("Ocp-Apim-Subscription-Key", subscriptionKey));
+	headers.insert(std::pair<std::string, std::string>("Content-Type", ContentType));
+
+	HttpResponse response = post(endpoint, "", &headers, data);
+	std::cout << "Raw Json Input\n" << response.content << "\n\n";
+
+	return response.content;
+};
+
+std::string Microsoft::CognitiveServices::ComputerVision::Face::Detect(std::string url,
+	Json::Value& options,
+	ApiServerRegion region,
+	std::string subscriptionKey,
+	std::string ContentType)
+{
+	std::string endpoint = "https://" + ApiServer(region) + "/face/v1.0/detect?returnFaceId=" + options["returnFaceId"].asString() + "&returnFaceLandmarks=" + options["returnFaceLandmarks"].asString();
+	std::map<string, string> headers;
+
+	HttpContent data;
+	std::string json = "{\"url\": \"" + url + "\"}";
+	data.buffer = new char[json.size() + 1];
+	strcpy(data.buffer, json.c_str());
+	data.size = json.size() + 1;
+
+	headers.insert(std::pair<std::string, std::string>("Ocp-Apim-Subscription-Key", subscriptionKey));
+	headers.insert(std::pair<std::string, std::string>("Content-Type", ContentType));
+
+	HttpResponse response = post(endpoint, "", &headers, &data);
+	std::cout << "Raw Json Input\n" << response.content << "\n\n";
+
+	return response.content;
+};

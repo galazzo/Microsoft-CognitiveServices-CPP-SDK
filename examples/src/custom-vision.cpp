@@ -10,7 +10,7 @@ using namespace Microsoft::CognitiveServices;
 using namespace Microsoft::CognitiveServices::ComputerVision::CustomVision;
 
 void print_usage() {
-	printf("Usage: custom-vision -source url|image -i images/sample06.jpg|http://www.comstoso.com/sample.jpg -projectid <YOUR PROJECT ID>\n");
+	printf("Usage: custom-vision -i images/sample06.jpg | http://www.comstoso.com/sample.jpg -projectid <YOUR PROJECT ID> -s=predictionKey\n");
 }
 
 int main(int argc, char **argv)
@@ -18,15 +18,13 @@ int main(int argc, char **argv)
 	std::cout << "Microsoft Cognitive Services in C++" << endl;
 	std::cout << "Custom Vision - Predict" << endl;
 
-	std::string predictionKeyFilePath = "predictionKey";
-	std::string source;
+	std::string subscriptionKeyFilePath = "predictionKey";	
 	std::string input;
 	std::string projectid;
 
 	//Specifying the expected options
 	static struct option long_options[] = {
-		{"predictionKey",      optional_argument,       0,  'k' },
-		{"source",    required_argument, 0,  's' },
+		{"subscriptionKey",      optional_argument,       0,  's' },		
 		{"image",   required_argument, 0,  'i' },
 		{"projectid",   required_argument, 0,  'p' },
 		{0,           0,                 0,  0   }
@@ -37,10 +35,8 @@ int main(int argc, char **argv)
 	while ((opt = getopt_long_only(argc, argv, "", long_options, &long_index)) != -1)
 	{
 		switch (opt) {
-		case 'k': predictionKeyFilePath = optarg;
-			break;
-		case 's': source = optarg;
-			break;
+		case 's': subscriptionKeyFilePath = optarg;
+			break;		
 		case 'i': input = optarg;
 			break;
 		case 'p': projectid = optarg;
@@ -50,19 +46,18 @@ int main(int argc, char **argv)
 		}
 	}
 
-	std::string predictionKey;
-	std::ifstream predictionKeyFile;
-	predictionKeyFile.open(predictionKeyFilePath);
-	std::getline(predictionKeyFile, predictionKey);
-	predictionKeyFile.close();
+	std::string subscriptionKey;
+	std::ifstream subscriptionKeyFile;
+	subscriptionKeyFile.open(subscriptionKeyFilePath);
+	std::getline(subscriptionKeyFile, subscriptionKey);
+	subscriptionKeyFile.close();
 
-	if (source == "url") 
+	if (isUrl(input))
 	{
-		Prediction id = PredictImageUrlWithNoStore(input, projectid, ApiServerRegion::South_Central_US, predictionKey);
+		Prediction id = PredictImageUrlWithNoStore(input, projectid, ApiServerRegion::South_Central_US, subscriptionKey);
 		id.debug();
-	} 
-
-	if (source == "image") 
+	}
+	else
 	{
 		HttpContent wt;
 
@@ -75,7 +70,7 @@ int main(int argc, char **argv)
 		wt.size = buffer.size();
 		wt.buffer = reinterpret_cast<char*>(buffer.data());
 
-		Prediction id = PredictImageWithNoStore(&wt, projectid, ApiServerRegion::South_Central_US, predictionKey);
+		Prediction id = PredictImageWithNoStore(&wt, projectid, ApiServerRegion::South_Central_US, subscriptionKey);
 		id.debug();
 	}
 

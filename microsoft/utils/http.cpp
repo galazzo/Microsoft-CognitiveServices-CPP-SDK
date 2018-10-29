@@ -2,10 +2,55 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string>
 #include <iostream>
 #include <curl/curl.h>
  
 using namespace std;
+
+static std::regex url_regex(
+	R"(^(([^:\/?#]+):)?(//([^\/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?)",
+	std::regex::extended
+);
+
+static std::vector<std::string> domainExtension{ "com", "it", "co.uk", "net", "eu", "ai", "fr", "de", "es" };
+
+bool isUrl(std::string value)
+{
+	bool result = false;
+
+	std::smatch url_match_result;
+
+	std::cout << "Checking: " << value << std::endl;
+
+	if (std::regex_match(value, url_match_result, url_regex))
+	{
+		/*for (const auto& res : url_match_result) {
+			std::cout << ": " << res << std::endl;
+		}*/
+
+		try {
+			if (url_match_result[0].str().rfind("http", 0) == 0)
+			{
+				result = true;
+			}
+			/*else
+				if (url_match_result[4].lfind("com", 0) == 0)
+				{
+
+				}*/
+		}
+		catch (exception& ex) {
+
+		}
+	}
+	else {
+		std::cerr << "Malformed url." << std::endl;
+	}
+
+	return result;
+}
+
 
 static size_t ReadCallback(void *content, size_t size, size_t nmemb, void *userp)
 {

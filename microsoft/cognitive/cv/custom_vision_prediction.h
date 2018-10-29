@@ -8,7 +8,7 @@
 using namespace std;
 using namespace Microsoft::CognitiveServices;
 
-class Microsoft::CognitiveServices::ComputerVision::CustomVision::Prediction : public IJsonSerializable {
+class Microsoft::CognitiveServices::ComputerVision::CustomVision::Prediction : public IJsonSerializable, Microsoft::CognitiveServices::Result {
 public:
 
     Prediction( void );

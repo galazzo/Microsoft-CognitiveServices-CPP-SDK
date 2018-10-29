@@ -17,6 +17,9 @@ void Analysis::Serialize( Json::Value& root )
 
 void Analysis::Deserialize( Json::Value& root )
 {
+	response.status_code = root.isMember("statusCode") ? root["statusCode"].asInt() : 0;
+	response.message = root.isMember("message") ? root["message"].asString() : std::string();
+
 	_requestId = root["requestId"].asString();
 	
 	if( root.isMember("metadata")) {
@@ -184,7 +187,11 @@ const vector<Caption>& Analysis::captions() const{
     return _captions;
 }
 
-void Analysis::debug() {
+void Analysis::debug()
+{
+	std::cout << "status code: " << response.status_code << endl;
+	std::cout << "message: " << response.message << endl;
+	std::cout << endl;
 
     std::cout << "Metadata:" << endl;
     std::cout << "\twidth: "<< _metadata.width << endl;
@@ -298,6 +305,30 @@ Microsoft::CognitiveServices::ComputerVision::Analysis Microsoft::CognitiveServi
     return analysis;
 };
 
+Microsoft::CognitiveServices::ComputerVision::Analysis Microsoft::CognitiveServices::ComputerVision::Tags(std::string url, ApiServerRegion region, std::string subscriptionKey, std::string ContentType)
+{
+	std::string endpoint = "https://" + ApiServer(region) + "/vision/v2.0/tag";
+
+	HttpContent data;
+	std::string json = "{\"url\": \"" + url + "\"}";
+	data.buffer = new char[json.size() + 1];
+	strcpy(data.buffer, json.c_str());
+	data.size = json.size() + 1;
+
+	std::map<string, string> headers;
+
+	headers.insert(std::pair<std::string, std::string>("Ocp-Apim-Subscription-Key", subscriptionKey));
+	headers.insert(std::pair<std::string, std::string>("Content-Type", ContentType));
+
+	HttpResponse response = post(endpoint, "", &headers, &data);
+	Microsoft::CognitiveServices::ComputerVision::Analysis analysis;
+	CJsonSerializer::Deserialize(&analysis, response.content);
+
+	//std::cout << "Raw Json Input\n" << response.content << "\n\n";
+
+	return analysis;
+};
+
 Microsoft::CognitiveServices::ComputerVision::Analysis Microsoft::CognitiveServices::ComputerVision::Describe(HttpContent* data, ApiServerRegion region, std::string subscriptionKey, std::string ContentType)
 {
     std::string endpoint = "https://" + ApiServer(region) + "/vision/v2.0/describe";
@@ -310,6 +341,30 @@ Microsoft::CognitiveServices::ComputerVision::Analysis Microsoft::CognitiveServi
 	HttpResponse response = post(endpoint,"", &headers, data);
 	Microsoft::CognitiveServices::ComputerVision::Analysis analysis;
 	CJsonSerializer::Deserialize( &analysis, response.content );
+
+	//std::cout << "Raw Json Input\n" << response.content << "\n\n";
+
+	return analysis;
+};
+
+Microsoft::CognitiveServices::ComputerVision::Analysis Microsoft::CognitiveServices::ComputerVision::Describe(std::string url, ApiServerRegion region, std::string subscriptionKey, std::string ContentType)
+{
+	std::string endpoint = "https://" + ApiServer(region) + "/vision/v2.0/describe";
+
+	HttpContent data;
+	std::string json = "{\"url\": \"" + url + "\"}";
+	data.buffer = new char[json.size() + 1];
+	strcpy(data.buffer, json.c_str());
+	data.size = json.size() + 1;
+
+	std::map<string, string> headers;
+
+	headers.insert(std::pair<std::string, std::string>("Ocp-Apim-Subscription-Key", subscriptionKey));
+	headers.insert(std::pair<std::string, std::string>("Content-Type", ContentType));
+
+	HttpResponse response = post(endpoint, "", &headers, &data);
+	Microsoft::CognitiveServices::ComputerVision::Analysis analysis;
+	CJsonSerializer::Deserialize(&analysis, response.content);
 
 	//std::cout << "Raw Json Input\n" << response.content << "\n\n";
 
@@ -332,7 +387,32 @@ Microsoft::CognitiveServices::ComputerVision::Analysis Microsoft::CognitiveServi
 	CJsonSerializer::Deserialize( &analysis, response.content );
 
 	//std::cout << "Raw Json Input\n" << response.content << "\n\n";
-	//std::cout.flush();
+	
+	return analysis;
+};
+
+Microsoft::CognitiveServices::ComputerVision::Analysis Microsoft::CognitiveServices::ComputerVision::Analyze(std::string url, ApiServerRegion region, std::string subscriptionKey, std::string ContentType)
+{
+	std::string endpoint = "https://" + ApiServer(region) + "/vision/v2.0/analyze?visualFeatures=Categories,Tags,Description,Faces,ImageType,Color,Adult&details=Landmarks,Celebrities&language=en";
+
+	HttpContent data;
+	std::string json = "{\"url\": \"" + url + "\"}";
+	data.buffer = new char[json.size() + 1];
+	strcpy(data.buffer, json.c_str());
+	data.size = json.size() + 1;
+
+	std::map<string, string> headers;
+
+	headers.insert(std::pair<std::string, std::string>("Ocp-Apim-Subscription-Key", subscriptionKey));
+	headers.insert(std::pair<std::string, std::string>("Content-Type", ContentType));
+
+	std::cout << endpoint << endl;
+
+	HttpResponse response = post(endpoint, "", &headers, &data);
+	Microsoft::CognitiveServices::ComputerVision::Analysis analysis;
+	CJsonSerializer::Deserialize(&analysis, response.content);
+
+	//std::cout << "Raw Json Input\n" << response.content << "\n\n";
 
 	return analysis;
 };

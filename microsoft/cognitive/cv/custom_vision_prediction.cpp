@@ -16,6 +16,9 @@ void Prediction::Serialize( Json::Value& root )
 
 void Prediction::Deserialize( Json::Value& root )
 {
+	response.status_code = root.isMember("statusCode") ? root["statusCode"].asInt() : 0;
+	response.message = root.isMember("message") ? root["message"].asString() : std::string();
+
 	_id = root.isMember("id") ? root["id"].asString() : std::string();
 	_project = root.isMember("project") ? root["project"].asString() : std::string();
 	_iteration = root.isMember("iteration") ? root["iteration"].asString() : std::string();
@@ -71,6 +74,9 @@ const std::vector<PredictionBox>& Microsoft::CognitiveServices::ComputerVision::
 
 void Prediction::debug()
 {	
+	std::cout << "status code: " << response.status_code << endl;
+	std::cout << "message: " << response.message << endl;
+	std::cout << endl;
 	std::cout << "id: " << _id << endl;
 	std::cout << "project: " << _project << endl;
 	std::cout << "iteration: " << _iteration << endl;
