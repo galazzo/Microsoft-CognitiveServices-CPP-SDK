@@ -161,6 +161,7 @@ int main(int argc, char **argv)
 		if (api == "describe")
 		{
 			Analysis id = Describe(&wt, ApiServerRegion::West_Europe, subscriptionKey, "application/octet-stream");
+			
 			id.debug();
 		}
 		
@@ -178,7 +179,8 @@ int main(int argc, char **argv)
 		
 		if (api == "custom-vision")
 		{	
-			Microsoft::CognitiveServices::ComputerVision::CustomVision::Prediction id = Microsoft::CognitiveServices::ComputerVision::CustomVision::PredictImageWithNoStore(&wt, projectid, ApiServerRegion::South_Central_US, subscriptionKey);
+			Microsoft::CognitiveServices::ComputerVision::CustomVision::Prediction id = Microsoft::CognitiveServices::ComputerVision::CustomVision::PredictImageWithNoStore(&wt, projectid, ApiServerRegion::West_Europe, subscriptionKey);
+
 			id.debug();			
 		}
 

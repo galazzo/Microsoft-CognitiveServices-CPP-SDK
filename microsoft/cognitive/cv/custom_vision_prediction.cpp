@@ -98,9 +98,11 @@ void Prediction::debug()
 }
 
 Microsoft::CognitiveServices::ComputerVision::CustomVision::Prediction Microsoft::CognitiveServices::ComputerVision::CustomVision::PredictImage(HttpContent * data, std::string project_id, ApiServerRegion region, std::string predictionKey, std::string ContentType)
-{
-	std::string endpoint = "https://" + ApiServer(region) + "/customvision/v2.0/Prediction/" + project_id + "/image";  // [?iterationId][&application]
-		
+{	
+	std::string endpoint = "https://" + ApiServer(region) + "/customvision/v3.0/Prediction/" + project_id + "/classify/iterations/Iteration1/image";  // [?iterationId][&application]
+
+	std::cout << endpoint << endl;
+
 	std::map<string, string> headers;
 
 	headers.insert(std::pair<std::string, std::string>("Prediction-key", predictionKey));
@@ -117,7 +119,9 @@ Microsoft::CognitiveServices::ComputerVision::CustomVision::Prediction Microsoft
 
 Microsoft::CognitiveServices::ComputerVision::CustomVision::Prediction Microsoft::CognitiveServices::ComputerVision::CustomVision::PredictImageWithNoStore(HttpContent * data, std::string project_id, ApiServerRegion region, std::string predictionKey, std::string ContentType)
 {
-	std::string endpoint = "https://" + ApiServer(region) + "/customvision/v2.0/Prediction/" + project_id + "/image/nostore"; // [?iterationId][&application]
+	std::string endpoint = "https://" + ApiServer(region) + "/customvision/v3.0/Prediction/" + project_id + "/classify/iterations/Iteration1/image/nostore";  // [?iterationId][&application]
+
+	std::cout << endpoint << endl;
 
 	std::map<string, string> headers;
 
@@ -134,8 +138,10 @@ Microsoft::CognitiveServices::ComputerVision::CustomVision::Prediction Microsoft
 }
 
 Microsoft::CognitiveServices::ComputerVision::CustomVision::Prediction Microsoft::CognitiveServices::ComputerVision::CustomVision::PredictImageUrl(std::string url, std::string project_id, ApiServerRegion region, std::string predictionKey, std::string ContentType)
-{	
-    std::string endpoint = "https://" + ApiServer(region) + "/customvision/v2.0/Prediction/"+ project_id +"/url";  // [?iterationId][&application]
+{
+	std::string endpoint = "https://" + ApiServer(region) + "/customvision/v3.0/Prediction/" + project_id + "/classify/iterations/Iteration1/url";  // [?iterationId][&application]
+
+	std::cout << endpoint << endl;
 
 	HttpContent data;
 	std::string json = "{\"Url\": \""+ url +"\"}";
@@ -158,8 +164,10 @@ Microsoft::CognitiveServices::ComputerVision::CustomVision::Prediction Microsoft
 }
 
 Microsoft::CognitiveServices::ComputerVision::CustomVision::Prediction Microsoft::CognitiveServices::ComputerVision::CustomVision::PredictImageUrlWithNoStore(std::string url, std::string project_id, ApiServerRegion region, std::string predictionKey, std::string ContentType)
-{	
-	std::string endpoint = "https://" + ApiServer(region) + "/customvision/v2.0/Prediction/" + project_id + "/url/nostore"; // [? iterationId][&application]
+{
+	std::string endpoint = "https://" + ApiServer(region) + "/customvision/v3.0/Prediction/" + project_id + "/classify/iterations/Iteration1/url/nostore";  // [?iterationId][&application]
+
+	std::cout << endpoint << endl;
 
 	HttpContent data;
 	std::string json = "{\"Url\": \"" + url + "\"}";
